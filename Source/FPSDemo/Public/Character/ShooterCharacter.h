@@ -9,6 +9,7 @@
 class UCameraComponent;
 class USpringArmComponent;
 class UCombatComponent;
+class UInputAction;
 
 UCLASS()
 class FPSDEMO_API AShooterCharacter : public ACharacter
@@ -47,6 +48,23 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UCameraComponent> FirstPersonCameraComponent;
 
+	UPROPERTY(EditAnywhere, Category = "FPSDemo|Input")
+	TObjectPtr<UInputAction> CycleWeaponAction;
 
+	UPROPERTY(EditAnywhere, Category = "FPSDemo|Input")
+	TObjectPtr<UInputAction> FireWeaponAction;
+
+	UPROPERTY(EditAnywhere, Category = "FPSDemo|Input")
+	TObjectPtr<UInputAction> ReloadWeaponAction;
+
+	UPROPERTY(EditAnywhere, Category = "FPSDemo|Input")
+	TObjectPtr<UInputAction> AimWeaponAction;
+
+	void CycleWeapon();
+	void FireWeapon_Pressed();
+	void FireWeapon_Released();
+	void ReloadWeapon();
+	void AimWeapon_Pressed();
+	void AimWeapon_Released();
 
 };

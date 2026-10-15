@@ -2,6 +2,7 @@
 
 
 #include "Components/Combat/CombatComponent.h"
+#include "Engine/Engine.h"
 
 // Sets default values for this component's properties
 UCombatComponent::UCombatComponent()
@@ -24,30 +25,30 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 void UCombatComponent::Initiate_CycleWeapon()
 {
-
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Cycle Weapon"), false);
 }
 
 void UCombatComponent::Initiate_FireWeapon_Pressed()
 {
-
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Fire Weapon Pressed"), false);
 }
 
 void UCombatComponent::Initiate_FireWeapon_Released()
 {
-
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Fire Weapon Released"), false);
 }
 
 void UCombatComponent::Initiate_ReloadWeapon()
 {
-
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Reload Weapon"), false);
 }
 
 void UCombatComponent::Initiate_AimWeapon_Pressed()
 {
-
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Aim Weapon Pressed"), false);
 }
 
 void UCombatComponent::Initiate_AimWeapon_Released()
 {
-
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Aim Weapon Released"), false);
 }

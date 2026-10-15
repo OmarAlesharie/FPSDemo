@@ -6,6 +6,8 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/Combat/CombatComponent.h"
+#include "EnhancedInputComponent.h"
+#include "Components/InputComponent.h"
 
 
 // Sets default values
@@ -68,5 +70,49 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	UEnhancedInputComponent* ShooterInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
+
+	ShooterInputComponent->BindAction(CycleWeaponAction, ETriggerEvent::Started, this, &AShooterCharacter::CycleWeapon);
+	ShooterInputComponent->BindAction(FireWeaponAction, ETriggerEvent::Started, this, &AShooterCharacter::FireWeapon_Pressed);
+	ShooterInputComponent->BindAction(FireWeaponAction, ETriggerEvent::Completed, this, &AShooterCharacter::FireWeapon_Released);
+	ShooterInputComponent->BindAction(ReloadWeaponAction, ETriggerEvent::Started, this, &AShooterCharacter::ReloadWeapon);
+	ShooterInputComponent->BindAction(AimWeaponAction, ETriggerEvent::Started, this, &AShooterCharacter::AimWeapon_Pressed);
+	ShooterInputComponent->BindAction(AimWeaponAction, ETriggerEvent::Completed, this, &AShooterCharacter::AimWeapon_Released);
+}
+
+void AShooterCharacter::CycleWeapon()
+{
+	if (!Combat) return;
+	Combat->Initiate_CycleWeapon();
+}
+
+void AShooterCharacter::FireWeapon_Pressed()
+{
+	if (!Combat) return;
+	Combat->Initiate_FireWeapon_Pressed();
+}
+
+void AShooterCharacter::FireWeapon_Released()
+{
+	if (!Combat) return;
+	Combat->Initiate_FireWeapon_Released();
+}
+
+void AShooterCharacter::ReloadWeapon()
+{
+	if (!Combat) return;
+	Combat->Initiate_ReloadWeapon();
+}
+
+void AShooterCharacter::AimWeapon_Pressed()
+{
+	if (!Combat) return;
+	Combat->Initiate_AimWeapon_Pressed();
+}
+
+void AShooterCharacter::AimWeapon_Released()
+{
+	if (!Combat) return;
+	Combat->Initiate_AimWeapon_Released();
 }
 
