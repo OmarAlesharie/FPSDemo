@@ -1,7 +1,7 @@
 // Copyright Omar Alesharie
 
 
-#include "ShooterCharacter.h"
+#include "Character/ShooterCharacter.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 
