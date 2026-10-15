@@ -1,0 +1,40 @@
+// Copyright Omar Alesharie
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/Actor.h"
+#include "Weapon.generated.h"
+
+class USkeletalMeshComponent;
+
+UCLASS()
+class FPSDEMO_API AWeapon : public AActor
+{
+	GENERATED_BODY()
+	
+public:	
+	// Sets default values for this actor's properties
+	AWeapon();
+
+	USkeletalMeshComponent* GetWeaponMesh1P() const { return WeaponMesh1P; }
+	USkeletalMeshComponent* GetWeaponMesh3P() const { return WeaponMesh3P; }
+
+
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+private:
+
+	// Skeletal mesh for the weapon in first person view
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USkeletalMeshComponent> WeaponMesh1P;
+
+	// Skeletal mesh for the weapon in third person view
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USkeletalMeshComponent> WeaponMesh3P;
+	
+
+};
