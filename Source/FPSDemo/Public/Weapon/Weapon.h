@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GameplayTagContainer.h"
 #include "Weapon.generated.h"
 
 class USkeletalMeshComponent;
@@ -21,10 +22,12 @@ public:
 	USkeletalMeshComponent* GetWeaponMesh3P() const { return WeaponMesh3P; }
 
 
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FPSDemo|Weapon")
+	FGameplayTag WeaponType;
 
 private:
 
