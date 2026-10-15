@@ -2,6 +2,9 @@
 
 
 #include "ShooterCharacter.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
+
 
 // Sets default values
 AShooterCharacter::AShooterCharacter()
@@ -9,6 +12,33 @@ AShooterCharacter::AShooterCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	CameraBoom = CreateDefaultSubobject<USpringArmComponent>("CameraBoom");
+	CameraBoom->SetupAttachment(RootComponent);
+	CameraBoom->TargetArmLength = 0.0f;
+	CameraBoom->bEnableCameraLag = true;
+	CameraBoom->CameraLagSpeed = 15.0f;
+	CameraBoom->bUsePawnControlRotation = true;
+
+	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>("FirstPersonCamera");
+	FirstPersonCameraComponent->SetupAttachment(CameraBoom);
+	FirstPersonCameraComponent->bUsePawnControlRotation = false;
+
+	Mesh1P = CreateDefaultSubobject<USkeletalMeshComponent>("CharacterMesh1P");
+	Mesh1P->SetupAttachment(FirstPersonCameraComponent);
+	Mesh1P->bOnlyOwnerSee = true;
+	Mesh1P->bOwnerNoSee = false;
+	Mesh1P->bCastDynamicShadow = false;
+	Mesh1P->bReceivesDecals = false;
+	
+	// OnlyTickPoseWhenRendered is a good option for optimizing performance, especially for first-person meshes that are not always visible to the player.
+	Mesh1P->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::OnlyTickPoseWhenRendered;
+
+	// Set the tick group for the Mesh1P component to TG_PrePhysics, which means it will tick before physics simulation starts.
+	Mesh1P->PrimaryComponentTick.TickGroup = ETickingGroup::TG_PrePhysics;
+
+	GetMesh()->bOnlyOwnerSee = false;
+	GetMesh()->bOwnerNoSee = true;
+	GetMesh()->bReceivesDecals = false;
 }
 
 // Called when the game starts or when spawned
