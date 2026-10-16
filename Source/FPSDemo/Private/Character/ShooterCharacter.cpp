@@ -4,6 +4,7 @@
 #include "Character/ShooterCharacter.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Data/WeaponData.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/Combat/CombatComponent.h"
 #include "EnhancedInputComponent.h"
@@ -78,6 +79,12 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	ShooterInputComponent->BindAction(ReloadWeaponAction, ETriggerEvent::Started, this, &AShooterCharacter::ReloadWeapon);
 	ShooterInputComponent->BindAction(AimWeaponAction, ETriggerEvent::Started, this, &AShooterCharacter::AimWeapon_Pressed);
 	ShooterInputComponent->BindAction(AimWeaponAction, ETriggerEvent::Completed, this, &AShooterCharacter::AimWeapon_Released);
+}
+
+FName AShooterCharacter::GetWeaponAttachPoint_Implementation(const FGameplayTag& WeaponType) const
+{
+	checkf(Combat->WeaponData, TEXT("Combat->WeaponData is null. Make sure to set the WeaponData in the CombatComponent."));
+	return Combat->WeaponData->GripPoints.FindChecked(WeaponType);
 }
 
 void AShooterCharacter::CycleWeapon()

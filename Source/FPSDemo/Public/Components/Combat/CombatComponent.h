@@ -6,6 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "CombatComponent.generated.h"
 
+class UWeaponData;
+
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class FPSDEMO_API UCombatComponent : public UActorComponent
@@ -30,6 +32,8 @@ public:
 	void Initiate_AimWeapon_Pressed();
 	void Initiate_AimWeapon_Released();
 
+	UPROPERTY(EditDefaultsOnly, Category = "FPSDemo|Weapon")
+	TObjectPtr<UWeaponData> WeaponData;
 private:
 
 		
