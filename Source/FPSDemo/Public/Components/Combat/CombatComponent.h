@@ -37,10 +37,17 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "FPSDemo|Weapon")
 	TObjectPtr<UWeaponData> WeaponData;
 
+	void Equip(AWeapon* WeaponToEquip);
 	void SpawnInventory();
 	void DestroyInventory();
 
 private:
+
+	UPROPERTY(Transient, ReplicatedUsing=OnRep_CurrentWeapon)
+	TObjectPtr<AWeapon> CurrentWeapon;
+
+	UFUNCTION()
+	void OnRep_CurrentWeapon(AWeapon* PreviousWeapon);
 
 	UPROPERTY(Transient, Replicated)
 	TArray<TObjectPtr<AWeapon>> Inventory;

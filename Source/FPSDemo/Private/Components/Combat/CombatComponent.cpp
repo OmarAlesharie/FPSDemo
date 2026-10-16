@@ -29,7 +29,9 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
 	DOREPLIFETIME(UCombatComponent, Inventory);
+	DOREPLIFETIME(UCombatComponent, CurrentWeapon);
 }
 
 void UCombatComponent::Initiate_CycleWeapon()
@@ -62,6 +64,12 @@ void UCombatComponent::Initiate_AimWeapon_Released()
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Aim Weapon Released"), false);
 }
 
+void UCombatComponent::Equip(AWeapon* WeaponToEquip)
+{
+	CurrentWeapon = WeaponToEquip;
+	CurrentWeapon->AttachToOwningPawn();
+}
+
 void UCombatComponent::SpawnInventory()
 {
 	if (GetOwner()->GetLocalRole() != ROLE_Authority)
@@ -80,13 +88,30 @@ void UCombatComponent::SpawnInventory()
 
 	if (Inventory.Num() > 0)
 	{
-		Inventory[0]->AttachToOwningPawn();
+		Equip(Inventory[0]);
 	}
 }
 
 void UCombatComponent::DestroyInventory()
 {
-	// Todo: Destroy all weapons in the inventory
+	for (AWeapon* Weapon : Inventory)
+	{
+		if (IsValid(Weapon))
+		{
+			Weapon->Destroy();
+		}
+	}
+	Inventory.Empty();
+}
+
+void UCombatComponent::OnRep_CurrentWeapon(AWeapon* PreviousWeapon)
+{
+	if (!IsValid(CurrentWeapon))
+	{
+		return;
+	}
+
+	CurrentWeapon->AttachToOwningPawn();
 }
 
 AWeapon* UCombatComponent::SpawnWeapon(TSubclassOf<AWeapon> WeaponClass) const
