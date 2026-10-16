@@ -5,6 +5,7 @@
 #include "Data/WeaponData.h"
 #include "Weapon/Weapon.h"
 #include "Engine/Engine.h"
+#include <Net/UnrealNetwork.h>
 
 // Sets default values for this component's properties
 UCombatComponent::UCombatComponent()
@@ -23,6 +24,12 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(UCombatComponent, Inventory);
 }
 
 void UCombatComponent::Initiate_CycleWeapon()
@@ -57,14 +64,23 @@ void UCombatComponent::Initiate_AimWeapon_Released()
 
 void UCombatComponent::SpawnInventory()
 {
-	AWeapon* NewWeapon = SpawnWeapon(DefaultWeaponClass);
-	if (IsValid(NewWeapon))
+	if (GetOwner()->GetLocalRole() != ROLE_Authority)
 	{
-		NewWeapon->AttachToOwningPawn();
+		return;
 	}
-	else
+
+	for (TSubclassOf<AWeapon> WeaponClass : DefaultWeaponClasses)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Failed to spawn weapon"), false);
+		AWeapon* NewWeapon = SpawnWeapon(WeaponClass);
+		if (NewWeapon)
+		{
+			Inventory.AddUnique(NewWeapon);
+		}
+	}
+
+	if (Inventory.Num() > 0)
+	{
+		Inventory[0]->AttachToOwningPawn();
 	}
 }
 
