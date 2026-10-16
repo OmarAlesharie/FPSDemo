@@ -87,6 +87,15 @@ FName AShooterCharacter::GetWeaponAttachPoint_Implementation(const FGameplayTag&
 	return Combat->WeaponData->GripPoints.FindChecked(WeaponType);
 }
 
+void AShooterCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	if (IsValid(Combat))
+	{
+		Combat->SpawnInventory();
+	}
+}
+
 void AShooterCharacter::CycleWeapon()
 {
 	if (!Combat) return;

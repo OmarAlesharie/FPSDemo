@@ -35,6 +35,9 @@ public:
 	/** IPlayerInterface implementation */
 	virtual FName GetWeaponAttachPoint_Implementation(const FGameplayTag& WeaponType) const override;
 
+	// Called when the controller possesses this character
+	virtual void PossessedBy(AController* NewController) override;
+
 private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
