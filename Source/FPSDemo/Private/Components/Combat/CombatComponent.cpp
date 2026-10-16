@@ -89,6 +89,8 @@ void UCombatComponent::SpawnInventory()
 	if (Inventory.Num() > 0)
 	{
 		Equip(Inventory[0]);
+		
+		GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Magenta, FString::Printf(TEXT("Selected Weapon Type = %s"),*Inventory[0]->GetClass()->GetName()), false);
 	}
 }
 
