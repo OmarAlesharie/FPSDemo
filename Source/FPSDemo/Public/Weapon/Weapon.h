@@ -18,8 +18,12 @@ public:
 	// Sets default values for this actor's properties
 	AWeapon();
 
+	virtual void OnRep_Instigator() override;
+
 	USkeletalMeshComponent* GetWeaponMesh1P() const { return WeaponMesh1P; }
 	USkeletalMeshComponent* GetWeaponMesh3P() const { return WeaponMesh3P; }
+
+	void AttachToOwningPawn() const;
 
 
 protected:
@@ -39,5 +43,5 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USkeletalMeshComponent> WeaponMesh3P;
 	
-
+	void SetMeshVisibility(APawn* OwningPawn) const;
 };

@@ -31,12 +31,19 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	/** IPlayerInterface implementation */
-	virtual FName GetWeaponAttachPoint_Implementation(const FGameplayTag& WeaponType) const override;
-
 	// Called when the controller possesses this character
 	virtual void PossessedBy(AController* NewController) override;
+
+#pragma region PlayerInterface
+	/** IPlayerInterface implementation */
+	virtual FName GetWeaponAttachPoint_Implementation(const FGameplayTag& WeaponType) const override;
+	virtual USkeletalMeshComponent* GetMesh1P_Implementation() const override;
+	virtual USkeletalMeshComponent* GetMesh3P_Implementation() const override;
+#pragma endregion
+
+
+	
+	
 
 private:
 

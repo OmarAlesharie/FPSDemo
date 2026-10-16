@@ -58,7 +58,14 @@ void UCombatComponent::Initiate_AimWeapon_Released()
 void UCombatComponent::SpawnInventory()
 {
 	AWeapon* NewWeapon = SpawnWeapon(DefaultWeaponClass);
-
+	if (IsValid(NewWeapon))
+	{
+		NewWeapon->AttachToOwningPawn();
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Failed to spawn weapon"), false);
+	}
 }
 
 void UCombatComponent::DestroyInventory()
