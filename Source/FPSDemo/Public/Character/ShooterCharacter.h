@@ -46,9 +46,8 @@ public:
 	virtual USkeletalMeshComponent* GetMesh3P_Implementation() const override;
 #pragma endregion
 
-
-	
-	
+	UFUNCTION(BlueprintCallable)
+	FRotator GetFixedAimRotation() const;
 
 private:
 

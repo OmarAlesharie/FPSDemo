@@ -109,6 +109,21 @@ USkeletalMeshComponent* AShooterCharacter::GetMesh3P_Implementation() const
 	return GetMesh();
 }
 
+FRotator AShooterCharacter::GetFixedAimRotation() const
+{
+	FRotator AimRotation = GetBaseAimRotation();
+	
+	if (AimRotation.Pitch > 90.f && !IsLocallyControlled())
+	{
+		// map pitch from [270, 360) to [-90,0]
+		const FVector2D InRange(270.f, 360.f);
+		const FVector2D OutRange(-90.f, 0.f);
+		AimRotation.Pitch = FMath::GetMappedRangeValueClamped(InRange, OutRange, AimRotation.Pitch);
+	}
+
+	return AimRotation;
+}
+
 void AShooterCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
