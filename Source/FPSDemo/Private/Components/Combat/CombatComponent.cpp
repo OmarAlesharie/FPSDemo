@@ -5,6 +5,7 @@
 #include "Data/WeaponData.h"
 #include "Weapon/Weapon.h"
 #include "Engine/Engine.h"
+#include "GameFramework/Pawn.h"
 #include <Net/UnrealNetwork.h>
 
 // Sets default values for this component's properties
@@ -131,8 +132,8 @@ AWeapon* UCombatComponent::SpawnWeapon(TSubclassOf<AWeapon> WeaponClass) const
 
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = OwningActor;
-	SpawnParams.Instigator = OwningActor->GetInstigator();
+	SpawnParams.Instigator = Cast<APawn>(OwningActor);
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	return OwningActor->GetWorld()->SpawnActor<AWeapon>(WeaponClass, SpawnParams);
+	return GetWorld()->SpawnActor<AWeapon>(WeaponClass, SpawnParams);
 }
