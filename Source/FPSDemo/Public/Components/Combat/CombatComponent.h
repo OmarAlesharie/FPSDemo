@@ -20,6 +20,9 @@ public:
 	UCombatComponent();
 
 protected:
+	
+	UPROPERTY(Transient, BlueprintReadOnly, ReplicatedUsing = OnRep_CurrentWeapon)
+	TObjectPtr<AWeapon> CurrentWeapon;
 
 public:	
 	// Called every frame
@@ -34,7 +37,7 @@ public:
 	void Initiate_AimWeapon_Pressed();
 	void Initiate_AimWeapon_Released();
 
-	UPROPERTY(EditDefaultsOnly, Category = "FPSDemo|Weapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FPSDemo|Weapon")
 	TObjectPtr<UWeaponData> WeaponData;
 
 	void Equip(AWeapon* WeaponToEquip);
@@ -43,8 +46,7 @@ public:
 
 private:
 
-	UPROPERTY(Transient, ReplicatedUsing=OnRep_CurrentWeapon)
-	TObjectPtr<AWeapon> CurrentWeapon;
+	
 
 	UFUNCTION()
 	void OnRep_CurrentWeapon(AWeapon* PreviousWeapon);
