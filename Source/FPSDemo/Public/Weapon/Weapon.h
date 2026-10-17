@@ -28,6 +28,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FPSDemo|Weapon")
 	FGameplayTag WeaponType;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FPSDemo|Aiming")
+	float AimFOV;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;	

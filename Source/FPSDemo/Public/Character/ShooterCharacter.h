@@ -27,6 +27,9 @@ protected:
 	// Called when the actor is being destroyed
 	virtual void BeginDestroy() override;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnAim(bool bIsAiming);
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -57,12 +60,15 @@ private:
 	TObjectPtr < USkeletalMeshComponent> Mesh1P;
 
 	// Camera boom positioning the camera behind the character
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FPSDemo|Camera", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USpringArmComponent> CameraBoom;
 
 	// Camera component for 1st person view (only seen by self)
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FPSDemo|Camera", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UCameraComponent> FirstPersonCameraComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FPSDemo|Aiming", meta = (AllowPrivateAccess = "true"))
+	float DefaultFOV;
 
 	UPROPERTY(EditAnywhere, Category = "FPSDemo|Input")
 	TObjectPtr<UInputAction> CycleWeaponAction;

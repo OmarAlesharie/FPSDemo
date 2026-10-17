@@ -28,7 +28,7 @@ AWeapon::AWeapon()
 	WeaponMesh3P->SetHiddenInGame(true);
 	WeaponMesh3P->SetupAttachment(WeaponMesh1P);
 
-
+	AimFOV = 65.0f;
 }
 
 void AWeapon::OnRep_Instigator()
