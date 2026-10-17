@@ -33,6 +33,8 @@ void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 
 	DOREPLIFETIME(UCombatComponent, Inventory);
 	DOREPLIFETIME(UCombatComponent, CurrentWeapon);
+	DOREPLIFETIME_CONDITION(UCombatComponent, bAiming, ELifetimeCondition::COND_SkipOwner);
+
 }
 
 void UCombatComponent::Initiate_CycleWeapon()
@@ -57,12 +59,24 @@ void UCombatComponent::Initiate_ReloadWeapon()
 
 void UCombatComponent::Initiate_AimWeapon_Pressed()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Aim Weapon Pressed"), false);
+	Local_Aim(true);
+	Server_Aim(true);
 }
 
 void UCombatComponent::Initiate_AimWeapon_Released()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Aim Weapon Released"), false);
+	Local_Aim(false);
+	Server_Aim(false);
+}
+
+void UCombatComponent::Server_Aim_Implementation(bool bPressed)
+{
+	Local_Aim(bPressed);
+}
+
+void UCombatComponent::Local_Aim(bool bPressed)
+{
+	bAiming = bPressed;
 }
 
 void UCombatComponent::Equip(AWeapon* WeaponToEquip)
@@ -137,3 +151,6 @@ AWeapon* UCombatComponent::SpawnWeapon(TSubclassOf<AWeapon> WeaponClass) const
 
 	return GetWorld()->SpawnActor<AWeapon>(WeaponClass, SpawnParams);
 }
+
+
+
