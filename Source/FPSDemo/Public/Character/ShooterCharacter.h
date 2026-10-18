@@ -52,6 +52,9 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "FPSDemo|FABRIK")
 	FTransform FABRIK_SocketTransform;
 
+	UFUNCTION(BlueprintCallable)
+	bool HasCurrentWeapon() const;
+
 private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FPSDemo|Combat", meta = (AllowPrivateAccess = "true"))
@@ -92,4 +95,5 @@ private:
 	void AimWeapon_Released();
 
 	void CalculateFABRIKSocketTransform();
+	void CalculateTurnInPlaceParameters();
 };
