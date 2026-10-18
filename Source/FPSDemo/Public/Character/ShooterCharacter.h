@@ -49,6 +49,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FRotator GetFixedAimRotation() const;
 
+	UPROPERTY(BlueprintReadOnly, Category = "FPSDemo|FABRIK")
+	FTransform FABRIK_SocketTransform;
+
 private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FPSDemo|Combat", meta = (AllowPrivateAccess = "true"))
@@ -88,4 +91,5 @@ private:
 	void AimWeapon_Pressed();
 	void AimWeapon_Released();
 
+	void CalculateFABRIKSocketTransform();
 };

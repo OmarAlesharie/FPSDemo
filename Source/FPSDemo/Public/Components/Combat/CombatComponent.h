@@ -19,6 +19,8 @@ public:
 	// Sets default values for this component's properties
 	UCombatComponent();
 
+	const TObjectPtr<AWeapon> GetCurrentWeapon();
+
 protected:
 	
 	UPROPERTY(Transient, BlueprintReadOnly, ReplicatedUsing = OnRep_CurrentWeapon)

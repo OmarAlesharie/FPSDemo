@@ -9,6 +9,7 @@
 #include "Components/Combat/CombatComponent.h"
 #include "EnhancedInputComponent.h"
 #include "Components/InputComponent.h"
+#include "Weapon/Weapon.h"
 
 
 // Sets default values
@@ -76,6 +77,22 @@ void AShooterCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	CalculateFABRIKSocketTransform();
+}
+
+void AShooterCharacter::CalculateFABRIKSocketTransform()
+{
+	if (IsValid(Combat) && IsValid(Combat->GetCurrentWeapon()) && IsValid(Combat->GetCurrentWeapon()->GetWeaponMesh3P()))
+	{
+		FABRIK_SocketTransform = Combat->GetCurrentWeapon()->GetWeaponMesh3P()->GetSocketTransform("FABRIK_Socket", ERelativeTransformSpace::RTS_World);
+
+		FVector OutLocation;
+		FRotator OutRotator;
+		GetMesh()->TransformToBoneSpace("hand_r", FABRIK_SocketTransform.GetLocation(), FABRIK_SocketTransform.GetRotation().Rotator(), OutLocation, OutRotator);
+
+		FABRIK_SocketTransform.SetLocation(OutLocation);
+		FABRIK_SocketTransform.SetRotation(OutRotator.Quaternion());
+	}
 }
 
 // Called to bind functionality to input

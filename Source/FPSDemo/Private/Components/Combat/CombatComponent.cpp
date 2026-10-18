@@ -18,6 +18,11 @@ UCombatComponent::UCombatComponent()
 	// ...
 }
 
+const TObjectPtr<AWeapon> UCombatComponent::GetCurrentWeapon()
+{
+	return CurrentWeapon;
+}
+
 
 // Called every frame
 void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
