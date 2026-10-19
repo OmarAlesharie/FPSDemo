@@ -51,8 +51,6 @@ public:
 
 private:
 
-	
-
 	UFUNCTION()
 	void OnRep_CurrentWeapon(AWeapon* PreviousWeapon);
 
@@ -67,5 +65,12 @@ private:
 	UFUNCTION(Server, Reliable)
 	void Server_Aim(bool bPressed);
 
+	UFUNCTION(Server, Reliable)
+	void Server_FireWeapon();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_FireWeapon();
+
 	void Local_Aim(bool bPressed);
+	void Local_FireWeapon();
 };
