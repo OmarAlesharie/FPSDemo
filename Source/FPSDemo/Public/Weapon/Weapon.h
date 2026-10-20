@@ -24,12 +24,16 @@ public:
 	USkeletalMeshComponent* GetWeaponMesh3P() const { return WeaponMesh3P; }
 
 	void AttachToOwningPawn() const;
+	void WeaponTrace(FHitResult& OutHit, float TraceLength);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FPSDemo|Weapon")
 	FGameplayTag WeaponType;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FPSDemo|Aiming")
 	float AimFOV;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FPS|Trace")
+	float TraceRadius;
 
 protected:
 	// Called when the game starts or when spawned

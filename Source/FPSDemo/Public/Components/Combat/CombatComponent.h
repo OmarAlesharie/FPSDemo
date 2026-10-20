@@ -26,6 +26,9 @@ protected:
 	UPROPERTY(Transient, BlueprintReadOnly, ReplicatedUsing = OnRep_CurrentWeapon)
 	TObjectPtr<AWeapon> CurrentWeapon;
 
+	UPROPERTY(EditDefaultsOnly, Category = "FPSDemo|Weapon")
+	float TraceLength;
+
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;

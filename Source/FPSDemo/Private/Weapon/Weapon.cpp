@@ -5,6 +5,9 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/Pawn.h"
 #include <Interfaces/PlayerInterface.h>
+#include <Kismet/KismetMathLibrary.h>
+#include "FPSDemo/FPSDemo.h"
+#include <KismetTraceUtils.h>
 
 // Sets default values
 AWeapon::AWeapon()
@@ -29,6 +32,7 @@ AWeapon::AWeapon()
 	WeaponMesh3P->SetupAttachment(WeaponMesh1P);
 
 	AimFOV = 65.0f;
+	TraceRadius = 5.f;
 }
 
 void AWeapon::OnRep_Instigator()
@@ -53,6 +57,54 @@ void AWeapon::AttachToOwningPawn() const
 
 	WeaponMesh1P->AttachToComponent(OwningPawnMesh1P, FAttachmentTransformRules::KeepRelativeTransform, AttachPoint);
 	WeaponMesh3P->AttachToComponent(OwningPawnMesh3P, FAttachmentTransformRules::KeepRelativeTransform, AttachPoint);
+}
+
+void AWeapon::WeaponTrace(FHitResult& OutHit, float TraceLength)
+{
+	FCollisionQueryParams QueryParams;
+	QueryParams.bReturnPhysicalMaterial = true;
+	QueryParams.AddIgnoredActor(GetOwner());
+
+	FCollisionResponseParams ResponseParams;
+	ResponseParams.CollisionResponse.SetAllChannels(ECollisionResponse::ECR_Ignore);
+	ResponseParams.CollisionResponse.SetResponse(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
+	ResponseParams.CollisionResponse.SetResponse(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Block);
+	ResponseParams.CollisionResponse.SetResponse(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Block);
+	ResponseParams.CollisionResponse.SetResponse(ECollisionChannel::ECC_PhysicsBody, ECollisionResponse::ECR_Block);
+
+	ensure(GetInstigator());
+	if (APlayerController* PC = Cast<APlayerController>(GetInstigator()->GetController()); IsValid(PC))
+	{
+		FVector EyesWorldLocation;
+		FRotator EyesWorldRotation;
+		PC->GetActorEyesViewPoint(EyesWorldLocation, EyesWorldRotation);
+		const FVector EyesWorldDirection = UKismetMathLibrary::GetForwardVector(EyesWorldRotation);
+
+		const FVector Start = EyesWorldLocation;
+		const FVector End = Start + EyesWorldDirection * TraceLength;
+
+		const bool bHit = GetWorld()->SweepSingleByChannel(
+			OutHit,
+			Start,
+			End,
+			FQuat::Identity,
+			FPSDemoTraceChannels::ECC_Weapon,
+			FCollisionShape::MakeSphere(TraceRadius),
+			QueryParams,
+			ResponseParams);
+
+		DrawDebugSphereTraceSingle(
+			GetWorld(),
+			Start,
+			End,
+			TraceRadius,
+			EDrawDebugTrace::ForDuration,
+			bHit,
+			OutHit,
+			FColor::Green,
+			FColor::Red,
+			5.f);
+	}
 }
 
 // Called when the game starts or when spawned
