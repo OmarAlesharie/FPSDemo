@@ -93,6 +93,7 @@ void AWeapon::WeaponTrace(FHitResult& OutHit, float TraceLength)
 			QueryParams,
 			ResponseParams);
 
+		
 		DrawDebugSphereTraceSingle(
 			GetWorld(),
 			Start,
@@ -105,6 +106,12 @@ void AWeapon::WeaponTrace(FHitResult& OutHit, float TraceLength)
 			FColor::Red,
 			5.f);
 	}
+}
+
+void AWeapon::Local_Fire(const FVector& ImpactPoint, const FVector& ImpactNormal, TEnumAsByte<EPhysicalSurface> ImpactSurfaceType, bool bIsFirstPerson)
+{
+	// local fire stuff...
+	FireEffects(ImpactPoint, ImpactNormal, ImpactSurfaceType, bIsFirstPerson);
 }
 
 // Called when the game starts or when spawned
