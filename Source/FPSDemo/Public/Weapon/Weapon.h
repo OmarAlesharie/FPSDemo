@@ -10,6 +10,13 @@
 enum EPhysicalSurface : int;
 class USkeletalMeshComponent;
 
+UENUM(BlueprintType)
+enum class EFireType : uint8
+{
+	Auto UMETA(DisplayName = "Automatic"),
+	SemiAuto UMETA(DisplayName = "SemiAutomatic")
+};
+
 UCLASS()
 class FPSDEMO_API AWeapon : public AActor
 {
@@ -35,6 +42,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FPSDemo|Trace")
 	float TraceRadius;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FPSDemo|FireType")
+	EFireType FireType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FPSDemo|FireType")
+	float FireTime;
 
 	void Local_Fire(const FVector& ImpactPoint, const FVector& ImpactNormal, TEnumAsByte<EPhysicalSurface> ImpactSurfaceType, bool bIsFirstPerson);
 

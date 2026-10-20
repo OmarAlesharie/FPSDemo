@@ -2,6 +2,7 @@
 
 
 #include "Components/Combat/CombatComponent.h"
+#include "TimerManager.h"
 #include "Data/WeaponData.h"
 #include "Animation/AnimInstance.h"
 #include "Animation/AnimMontage.h"
@@ -21,6 +22,8 @@ UCombatComponent::UCombatComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	TraceLength = 30'000.0f;
+	bAiming = false;
+	bTriggerPressed = false;
 }
 
 const TObjectPtr<AWeapon> UCombatComponent::GetCurrentWeapon()
@@ -54,6 +57,7 @@ void UCombatComponent::Initiate_CycleWeapon()
 
 void UCombatComponent::Initiate_FireWeapon_Pressed()
 {
+	bTriggerPressed = true;
 	Local_FireWeapon();
 }
 
@@ -79,8 +83,20 @@ void UCombatComponent::Local_FireWeapon()
 	EPhysicalSurface ImpactSurfaceType = Hit.PhysMaterial.IsValid(false) ? Hit.PhysMaterial->SurfaceType.GetValue() : SurfaceType1;
 	CurrentWeapon->Local_Fire(Hit.ImpactPoint, Hit.ImpactNormal, ImpactSurfaceType, true);
 
+	GetWorld()->GetTimerManager().SetTimer(FireTimer, this, &ThisClass::FireTimerFinished, CurrentWeapon->FireTime);
 	Server_FireWeapon(Hit);
 }
+
+void UCombatComponent::FireTimerFinished()
+{
+	if (!IsValid(CurrentWeapon)) return;
+
+	if (bTriggerPressed && CurrentWeapon->FireType == EFireType::Auto)
+	{
+		Local_FireWeapon();
+	}
+}
+
 
 void UCombatComponent::Server_FireWeapon_Implementation(const FHitResult& Hit)
 {
@@ -112,7 +128,7 @@ void UCombatComponent::Multicast_FireWeapon_Implementation(const FHitResult& Hit
 
 void UCombatComponent::Initiate_FireWeapon_Released()
 {
-	
+	bTriggerPressed = false;
 }
 
 void UCombatComponent::Initiate_ReloadWeapon()
