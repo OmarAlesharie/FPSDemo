@@ -33,7 +33,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FPSDemo|Aiming")
 	float AimFOV;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FPS|Trace")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FPSDemo|Trace")
 	float TraceRadius;
 
 	void Local_Fire(const FVector& ImpactPoint, const FVector& ImpactNormal, TEnumAsByte<EPhysicalSurface> ImpactSurfaceType, bool bIsFirstPerson);
@@ -48,12 +48,14 @@ protected:
 private:
 
 	// Skeletal mesh for the weapon in first person view
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FPSDemo|Weapon", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USkeletalMeshComponent> WeaponMesh1P;
 
 	// Skeletal mesh for the weapon in third person view
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FPSDemo|Weapon", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USkeletalMeshComponent> WeaponMesh3P;
 	
+private:
+
 	void SetMeshVisibility(APawn* OwningPawn) const;
 };

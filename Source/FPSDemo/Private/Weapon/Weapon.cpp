@@ -93,8 +93,12 @@ void AWeapon::WeaponTrace(FHitResult& OutHit, float TraceLength)
 			QueryParams,
 			ResponseParams);
 
+		if (!bHit)
+		{
+			OutHit.ImpactPoint = End;
+		}
 		
-		DrawDebugSphereTraceSingle(
+		/*DrawDebugSphereTraceSingle(
 			GetWorld(),
 			Start,
 			End,
@@ -104,7 +108,7 @@ void AWeapon::WeaponTrace(FHitResult& OutHit, float TraceLength)
 			OutHit,
 			FColor::Green,
 			FColor::Red,
-			5.f);
+			5.f);*/
 	}
 }
 
