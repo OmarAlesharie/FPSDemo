@@ -7,6 +7,7 @@
 #include "GameplayTagContainer.h"
 #include "Weapon.generated.h"
 
+class UMaterialInstanceDynamic;
 enum EPhysicalSurface : int;
 class USkeletalMeshComponent;
 

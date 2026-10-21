@@ -55,6 +55,7 @@ AShooterCharacter::AShooterCharacter()
 	DefaultFOV = 90.0f;
 
 	TurningStatus = ETurningInPlace::NotTurning;
+	bWeaponFirstReplicated = false;
 }
 
 // Called when the game starts or when spawned
@@ -65,6 +66,15 @@ void AShooterCharacter::BeginPlay()
 	FirstPersonCameraComponent->SetFieldOfView(DefaultFOV);
 
 	StartingAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
+}
+
+void AShooterCharacter::WeaponReplicated_Implementation()
+{
+	if (!bWeaponFirstReplicated)
+	{
+		bWeaponFirstReplicated = true;
+		OnWeaponFirstReplicated.Broadcast(Combat->GetCurrentWeapon());
+	}
 }
 
 void AShooterCharacter::BeginDestroy()

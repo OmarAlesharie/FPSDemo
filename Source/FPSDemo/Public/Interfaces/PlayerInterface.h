@@ -33,4 +33,6 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "FPSDemo|PlayerInterface")
 	USkeletalMeshComponent* GetMesh3P() const;
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void WeaponReplicated();
 };

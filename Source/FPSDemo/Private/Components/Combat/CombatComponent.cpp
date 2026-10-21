@@ -226,6 +226,7 @@ void UCombatComponent::OnRep_CurrentWeapon(AWeapon* PreviousWeapon)
 	}
 
 	CurrentWeapon->AttachToOwningPawn();
+	IPlayerInterface::Execute_WeaponReplicated(GetOwner());
 }
 
 AWeapon* UCombatComponent::SpawnWeapon(TSubclassOf<AWeapon> WeaponClass) const
