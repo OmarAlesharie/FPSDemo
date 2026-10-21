@@ -31,6 +31,15 @@ const TObjectPtr<AWeapon> UCombatComponent::GetCurrentWeapon()
 	return CurrentWeapon;
 }
 
+void UCombatComponent::InitializeWeaponWidgets() const
+{
+	if (IsValid(CurrentWeapon))
+	{
+		OnReticleChanged.Broadcast(CurrentWeapon->GetReticleDynamicMaterialInstance());
+		OnAmmoCounterChanged.Broadcast(CurrentWeapon->GetAmmoCounterDynamicMaterialInstance(), CurrentWeapon->Ammo, CurrentWeapon->MagCapacity);
+	}
+}
+
 
 // Called every frame
 void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -201,8 +210,7 @@ void UCombatComponent::SpawnInventory()
 	if (Inventory.Num() > 0)
 	{
 		Equip(Inventory[0]);
-		
-		GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Magenta, FString::Printf(TEXT("Selected Weapon Type = %s"),*Inventory[0]->GetClass()->GetName()), false);
+		InitializeWeaponWidgets();
 	}
 }
 
@@ -227,6 +235,7 @@ void UCombatComponent::OnRep_CurrentWeapon(AWeapon* PreviousWeapon)
 
 	CurrentWeapon->AttachToOwningPawn();
 	IPlayerInterface::Execute_WeaponReplicated(GetOwner());
+	InitializeWeaponWidgets();
 }
 
 AWeapon* UCombatComponent::SpawnWeapon(TSubclassOf<AWeapon> WeaponClass) const

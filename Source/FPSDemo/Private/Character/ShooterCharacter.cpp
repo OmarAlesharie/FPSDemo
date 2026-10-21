@@ -77,6 +77,11 @@ void AShooterCharacter::WeaponReplicated_Implementation()
 	}
 }
 
+AWeapon* AShooterCharacter::GetCurrentWeapon_Implementation()
+{
+	return Combat->GetCurrentWeapon();
+}
+
 void AShooterCharacter::BeginDestroy()
 {
 	Super::BeginDestroy();

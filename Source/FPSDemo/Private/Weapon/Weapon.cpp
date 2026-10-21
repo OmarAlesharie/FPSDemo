@@ -8,6 +8,7 @@
 #include <Kismet/KismetMathLibrary.h>
 #include "FPSDemo/FPSDemo.h"
 #include <KismetTraceUtils.h>
+#include "Materials/MaterialInstanceDynamic.h"
 
 // Sets default values
 AWeapon::AWeapon()
@@ -45,6 +46,24 @@ void AWeapon::OnRep_Instigator()
 {
 	Super::OnRep_Instigator();
 	AttachToOwningPawn();
+}
+
+UMaterialInstanceDynamic* AWeapon::GetReticleDynamicMaterialInstance()
+{
+	if (!IsValid(DynMatInst_Reticle))
+	{
+		DynMatInst_Reticle = UMaterialInstanceDynamic::Create(ReticleMaterial, this);
+	}
+	return DynMatInst_Reticle;
+}
+
+UMaterialInstanceDynamic* AWeapon::GetAmmoCounterDynamicMaterialInstance()
+{
+	if (!IsValid(DynMatInst_AmmoCounter))
+	{
+		DynMatInst_AmmoCounter = UMaterialInstanceDynamic::Create(AmmoCounterMaterial, this);
+	}
+	return DynMatInst_AmmoCounter;
 }
 
 void AWeapon::AttachToOwningPawn() const

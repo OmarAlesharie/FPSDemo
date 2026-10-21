@@ -31,6 +31,8 @@ public:
 
 	USkeletalMeshComponent* GetWeaponMesh1P() const { return WeaponMesh1P; }
 	USkeletalMeshComponent* GetWeaponMesh3P() const { return WeaponMesh3P; }
+	UMaterialInstanceDynamic* GetReticleDynamicMaterialInstance();
+	UMaterialInstanceDynamic* GetAmmoCounterDynamicMaterialInstance();
 
 	void AttachToOwningPawn() const;
 	void WeaponTrace(FHitResult& OutHit, float TraceLength);
@@ -93,4 +95,16 @@ private:
 
 	// Count the local steps infront of the server
 	int32 Sequence;
+
+	UPROPERTY(EditDefaultsOnly, Category = "FPSDemo|Weapon")
+	TObjectPtr<UMaterialInterface> ReticleMaterial;
+
+	UPROPERTY(EditDefaultsOnly, Category = "FPSDemo|Weapon")
+	TObjectPtr<UMaterialInterface> AmmoCounterMaterial;
+
+	UPROPERTY()
+	TObjectPtr<UMaterialInstanceDynamic> DynMatInst_Reticle;
+
+	UPROPERTY()
+	TObjectPtr<UMaterialInstanceDynamic> DynMatInst_AmmoCounter;
 };
