@@ -234,6 +234,16 @@ void AShooterCharacter::PossessedBy(AController* NewController)
 	}
 }
 
+void AShooterCharacter::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+
+	if (IsValid(Combat))
+	{
+		Combat->InitializeWeaponWidgets();
+	}
+}
+
 void AShooterCharacter::CycleWeapon()
 {
 	if (!Combat) return;

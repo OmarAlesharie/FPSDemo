@@ -40,8 +40,12 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
 	// Called when the controller possesses this character
 	virtual void PossessedBy(AController* NewController) override;
+
+	// runs on the client whenever the PlayerState property replicates from the server
+	virtual void OnRep_PlayerState() override;
 
 #pragma region PlayerInterface
 	/** IPlayerInterface implementation */
