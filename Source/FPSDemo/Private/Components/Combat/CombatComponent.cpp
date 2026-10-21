@@ -183,6 +183,7 @@ void UCombatComponent::Server_Aim_Implementation(bool bPressed)
 void UCombatComponent::Local_Aim(bool bPressed)
 {
 	bAiming = bPressed;
+	OnAimingStatusChanged.Broadcast(bAiming);
 }
 
 
