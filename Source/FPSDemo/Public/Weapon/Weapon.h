@@ -51,6 +51,21 @@ public:
 
 	void Local_Fire(const FVector& ImpactPoint, const FVector& ImpactNormal, TEnumAsByte<EPhysicalSurface> ImpactSurfaceType, bool bIsFirstPerson);
 
+	// On the server
+	void Auth_Fire();
+
+	// runs locally
+	void Rep_Fire(int32 AuthAmmo);
+
+	UPROPERTY(EditAnywhere, Category = "FPSDemo|Ammo")
+	int32 MagCapacity;
+
+	UPROPERTY(EditAnywhere, Category = "FPSDemo|Ammo")
+	int32 Ammo;
+
+	UPROPERTY(EditAnywhere, Category = "FPSDemo|Ammo")
+	int32 StartingCarriedAmmo;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override; 
@@ -71,4 +86,7 @@ private:
 private:
 
 	void SetMeshVisibility(APawn* OwningPawn) const;
+
+	// Count the local steps infront of the server
+	int32 Sequence;
 };

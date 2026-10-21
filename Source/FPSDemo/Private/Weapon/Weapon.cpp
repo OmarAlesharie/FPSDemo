@@ -35,6 +35,10 @@ AWeapon::AWeapon()
 	TraceRadius = 5.f;
 
 	FireTime = 0.1f;
+	MagCapacity = 10;
+	Ammo = 5;
+	StartingCarriedAmmo = 10;
+	Sequence = 0;
 }
 
 void AWeapon::OnRep_Instigator()
@@ -100,17 +104,7 @@ void AWeapon::WeaponTrace(FHitResult& OutHit, float TraceLength)
 			OutHit.ImpactPoint = End;
 		}
 		
-		/*DrawDebugSphereTraceSingle(
-			GetWorld(),
-			Start,
-			End,
-			TraceRadius,
-			EDrawDebugTrace::ForDuration,
-			bHit,
-			OutHit,
-			FColor::Green,
-			FColor::Red,
-			5.f);*/
+		
 	}
 }
 
@@ -118,6 +112,27 @@ void AWeapon::Local_Fire(const FVector& ImpactPoint, const FVector& ImpactNormal
 {
 	// local fire stuff...
 	FireEffects(ImpactPoint, ImpactNormal, ImpactSurfaceType, bIsFirstPerson);
+
+	if (GetInstigator()->IsLocallyControlled())
+	{
+		Ammo = FMath::Clamp(Ammo - 1, 0, MagCapacity);
+		++Sequence;
+	}
+}
+
+void AWeapon::Auth_Fire()
+{
+	Ammo = FMath::Clamp(Ammo - 1, 0, MagCapacity);
+}
+
+void AWeapon::Rep_Fire(int32 AuthAmmo)
+{
+	if (GetInstigator()->IsLocallyControlled())
+	{
+		Ammo = AuthAmmo;
+		--Sequence;
+		Ammo -= Sequence;
+	}
 }
 
 // Called when the game starts or when spawned
