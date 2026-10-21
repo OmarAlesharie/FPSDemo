@@ -66,7 +66,7 @@ void UCombatComponent::Initiate_FireWeapon_Pressed()
 	}
 	else
 	{
-		// To Do: some effect if the player try to fire with 0 Ammo
+		CurrentWeapon->OutOfAmmoFireEffect();
 	}
 }
 

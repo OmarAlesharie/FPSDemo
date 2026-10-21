@@ -66,6 +66,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "FPSDemo|Ammo")
 	int32 StartingCarriedAmmo;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OutOfAmmoFireEffect();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override; 
