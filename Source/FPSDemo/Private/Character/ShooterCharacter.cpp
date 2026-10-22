@@ -82,6 +82,11 @@ AWeapon* AShooterCharacter::GetCurrentWeapon_Implementation()
 	return Combat->GetCurrentWeapon();
 }
 
+int32 AShooterCharacter::GetReserveAmmo_Implementation() const
+{
+	return Combat->CurrentReserveAmmo;
+}
+
 void AShooterCharacter::BeginDestroy()
 {
 	Super::BeginDestroy();
