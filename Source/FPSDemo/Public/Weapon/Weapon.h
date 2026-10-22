@@ -56,6 +56,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "FPSDemo|Reticle")
 	FReticleParams ReticleParams;
 
+	UPROPERTY(EditDefaultsOnly, Category = "FPSDemo|Icon")
+	TObjectPtr<UMaterialInterface> WeaponIcon;
+
 	void Local_Fire(const FVector& ImpactPoint, const FVector& ImpactNormal, TEnumAsByte<EPhysicalSurface> ImpactSurfaceType, bool bIsFirstPerson);
 
 	// On the server
