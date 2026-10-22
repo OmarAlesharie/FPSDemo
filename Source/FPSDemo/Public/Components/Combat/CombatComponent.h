@@ -126,4 +126,12 @@ private:
 
 	int32 AdvanceWeaponIndex();
 	int32 Local_WeaponIndex;
+
+	void Local_CycleWeapon(int32 WeaponIndex);
+
+	UFUNCTION(Server, Reliable)
+	void Server_CycleWeapon(int32 WeaponIndex);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_CycleWeapon(int32 WeaponIndex);
 };

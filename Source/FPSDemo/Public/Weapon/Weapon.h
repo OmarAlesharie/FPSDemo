@@ -38,14 +38,12 @@ public:
 	// Sets default values for this actor's properties
 	AWeapon();
 
-	virtual void OnRep_Instigator() override;
-
 	USkeletalMeshComponent* GetWeaponMesh1P() const { return WeaponMesh1P; }
 	USkeletalMeshComponent* GetWeaponMesh3P() const { return WeaponMesh3P; }
 	UMaterialInstanceDynamic* GetReticleDynamicMaterialInstance();
 	UMaterialInstanceDynamic* GetAmmoCounterDynamicMaterialInstance();
 
-	void AttachToOwningPawn() const;
+	void AttachToOwningPawn(APawn* Pawn) const;
 	void WeaponTrace(FHitResult& OutHit, float TraceLength);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FPSDemo|Weapon")

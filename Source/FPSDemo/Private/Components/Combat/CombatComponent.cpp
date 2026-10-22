@@ -101,23 +101,49 @@ void UCombatComponent::Initiate_CycleWeapon()
 	if (CurrentWeapon->WeaponStatus == EWeaponStatus::Cycling) return;
 
 	AdvanceWeaponIndex();
-	// Local_CycleWeapon(WeaponIndex)
+	Local_CycleWeapon(Local_WeaponIndex);
 	// Server_CycleWeapon(WeaponIndex)
 }
 
-// Local_CycleWeapon
-	// Play the equip montage of the weapon at WeaponIndex
-		// if locally-controlled, play the 1P, otherwise play the 3P
-	// if locally controlled Server_CycleWeapon()
-	// Set the WeaponStatus on CurrentWeapon to Cycling
+void UCombatComponent::Local_CycleWeapon(int32 WeaponIndex)
+{
+	AWeapon* NextWeapon = Inventory[WeaponIndex];
+	if (!IsValid(NextWeapon) || !IsValid(WeaponData)) return;
+	CurrentWeapon->WeaponStatus = EWeaponStatus::Cycling;
+	NextWeapon->WeaponStatus = EWeaponStatus::Cycling;
 
-// Server_CycleWeapon
-	// Set the local weapon index
-	// Multicast_CycleWeapon(WeaponIndex)
+	APawn* OwningPawn = Cast<APawn>(GetOwner());
+	const bool bIsLocal = IsValid(OwningPawn) && OwningPawn->IsLocallyControlled();
 
-// Multicast_CycleWeapon
-	// Set local weapon index
-	// Local_CycleWeapon(WeaponIndex)
+	const FMontageData& MontageData = bIsLocal ? WeaponData->FirstPersonMontages.FindChecked(NextWeapon->WeaponType) : WeaponData->ThirdPersonMontages.FindChecked(NextWeapon->WeaponType);
+	USkeletalMeshComponent* Mesh = bIsLocal ? IPlayerInterface::Execute_GetMesh1P(GetOwner()) : IPlayerInterface::Execute_GetMesh3P(GetOwner());
+	if (IsValid(Mesh) && IsValid(MontageData.EquipMontage))
+	{
+		Mesh->GetAnimInstance()->Montage_Play(MontageData.EquipMontage);
+	}
+	if (bIsLocal)
+	{
+		Server_CycleWeapon(WeaponIndex);
+	}
+}
+
+void UCombatComponent::Server_CycleWeapon_Implementation(int32 WeaponIndex)
+{
+	Local_WeaponIndex = WeaponIndex;
+	Multicast_CycleWeapon(WeaponIndex);
+}
+
+void UCombatComponent::Multicast_CycleWeapon_Implementation(int32 WeaponIndex)
+{
+	APawn* OwningPawn = Cast<APawn>(GetOwner());
+	if (!IsValid(OwningPawn)) return;
+
+	if (!OwningPawn->IsLocallyControlled())
+	{
+		Local_WeaponIndex = WeaponIndex;
+		Local_CycleWeapon(WeaponIndex);
+	}
+}
 
 void UCombatComponent::Initiate_FireWeapon_Pressed()
 {
@@ -263,7 +289,7 @@ void UCombatComponent::Local_Aim(bool bPressed)
 void UCombatComponent::Equip(AWeapon* WeaponToEquip)
 {
 	CurrentWeapon = WeaponToEquip;
-	CurrentWeapon->AttachToOwningPawn();
+	CurrentWeapon->AttachToOwningPawn(Cast<APawn>(GetOwner()));
 
 	CurrentReserveAmmo = ReserveAmmo.FindChecked(CurrentWeapon->WeaponType);
 	OnCurrentReserveAmmoChanged.Broadcast(CurrentReserveAmmo, WeaponToEquip->Ammo, CurrentWeapon->WeaponIcon);
@@ -312,7 +338,7 @@ void UCombatComponent::OnRep_CurrentWeapon(AWeapon* PreviousWeapon)
 		return;
 	}
 
-	CurrentWeapon->AttachToOwningPawn();
+	CurrentWeapon->AttachToOwningPawn(Cast<APawn>(GetOwner()));
 	IPlayerInterface::Execute_WeaponReplicated(GetOwner());
 	InitializeWeaponWidgets();
 }
