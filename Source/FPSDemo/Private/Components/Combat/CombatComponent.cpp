@@ -345,6 +345,40 @@ void UCombatComponent::EquipWeapon(AWeapon* Weapon)
 	}
 }
 
+void UCombatComponent::Server_EquipWeapon_Implementation(AWeapon* Weapon)
+{
+	EquipWeapon(Weapon);
+}
+
+void UCombatComponent::SetCurrentWeapon(AWeapon* NewWeapon, AWeapon* LastWeapon)
+{
+	AWeapon* LocalLastWeapon = nullptr;
+
+	if (IsValid(LastWeapon))
+	{
+		LocalLastWeapon = LastWeapon;
+	}
+	else if (NewWeapon != CurrentWeapon)
+	{
+		LocalLastWeapon = CurrentWeapon;
+	}
+
+	if (IsValid(LocalLastWeapon))
+	{
+		LocalLastWeapon->DetachFromOwningPawn();
+		LocalLastWeapon->WeaponStatus = EWeaponStatus::Unequipped;
+	}
+
+	CurrentWeapon = NewWeapon;
+	APawn* OwningPawn = Cast<APawn>(GetOwner());
+	if (IsValid(OwningPawn) && OwningPawn->HasAuthority() && IsValid(CurrentWeapon))
+	{
+		CurrentReserveAmmo = ReserveAmmo.FindChecked(CurrentWeapon->WeaponType);
+	}
+
+	CurrentWeapon->AttachToOwningPawn(OwningPawn);
+}
+
 void UCombatComponent::SpawnInventory()
 {
 	if (GetOwner()->GetLocalRole() != ROLE_Authority)
@@ -386,40 +420,6 @@ void UCombatComponent::OnRep_CurrentWeapon(AWeapon* PreviousWeapon)
 	SetCurrentWeapon(CurrentWeapon, PreviousWeapon);
 	IPlayerInterface::Execute_WeaponReplicated(GetOwner());
 	InitializeWeaponWidgets();
-}
-
-void UCombatComponent::Server_EquipWeapon_Implementation(AWeapon* Weapon)
-{
-	EquipWeapon(Weapon);
-}
-
-void UCombatComponent::SetCurrentWeapon(AWeapon* NewWeapon, AWeapon* LastWeapon)
-{
-	AWeapon* LocalLastWeapon = nullptr;
-
-	if (IsValid(LastWeapon))
-	{
-		LocalLastWeapon = LastWeapon;
-	}
-	else if (NewWeapon != CurrentWeapon)
-	{
-		LocalLastWeapon = CurrentWeapon;
-	}
-
-	if (IsValid(LocalLastWeapon))
-	{
-		LocalLastWeapon->DetachFromOwningPawn();
-		LocalLastWeapon->WeaponStatus = EWeaponStatus::Unequipped;
-	}
-
-	CurrentWeapon = NewWeapon;
-	APawn* OwningPawn = Cast<APawn>(GetOwner());
-	if (IsValid(OwningPawn) && OwningPawn->HasAuthority() && IsValid(CurrentWeapon))
-	{
-		CurrentReserveAmmo = ReserveAmmo.FindChecked(CurrentWeapon->WeaponType);
-	}
-
-	CurrentWeapon->AttachToOwningPawn(OwningPawn);
 }
 
 AWeapon* UCombatComponent::SpawnWeapon(TSubclassOf<AWeapon> WeaponClass) const
