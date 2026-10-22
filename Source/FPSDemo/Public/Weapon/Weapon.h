@@ -44,6 +44,7 @@ public:
 	UMaterialInstanceDynamic* GetAmmoCounterDynamicMaterialInstance();
 
 	void AttachToOwningPawn(APawn* Pawn) const;
+	void DetachFromOwningPawn();
 	void WeaponTrace(FHitResult& OutHit, float TraceLength);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FPSDemo|Weapon")

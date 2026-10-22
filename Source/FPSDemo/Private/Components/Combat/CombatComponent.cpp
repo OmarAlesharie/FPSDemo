@@ -43,7 +43,6 @@ void UCombatComponent::InitializeWeaponWidgets() const
 	}
 }
 
-
 // Called every frame
 void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -102,7 +101,6 @@ void UCombatComponent::Initiate_CycleWeapon()
 
 	AdvanceWeaponIndex();
 	Local_CycleWeapon(Local_WeaponIndex);
-	// Server_CycleWeapon(WeaponIndex)
 }
 
 void UCombatComponent::Local_CycleWeapon(int32 WeaponIndex)
@@ -124,6 +122,7 @@ void UCombatComponent::Local_CycleWeapon(int32 WeaponIndex)
 	if (bIsLocal)
 	{
 		Server_CycleWeapon(WeaponIndex);
+		Mesh->GetAnimInstance()->OnMontageBlendingOut.AddDynamic(this, &ThisClass::BlendOut_CycleWeapon);
 	}
 }
 
@@ -243,6 +242,44 @@ void UCombatComponent::Multicast_FireWeapon_Implementation(const FHitResult& Hit
 		}
 }
 
+void UCombatComponent::Notify_CycleWeapon()
+{
+	if (!IsValid(CurrentWeapon)) return;
+
+	AWeapon* NewWeapon = Inventory[Local_WeaponIndex];
+	if (IsValid(NewWeapon))
+	{
+		EquipWeapon(NewWeapon);
+	}
+
+	GEngine->AddOnScreenDebugMessage(
+		-1,
+		5.0f,
+		FColor::Cyan,
+		TEXT("Notify_CycleWeapon"),
+		false
+	);
+}
+
+void UCombatComponent::BlendOut_CycleWeapon(UAnimMontage* Montage, bool bInterrupted)
+{
+	UAnimInstance* AnimInstance = IPlayerInterface::Execute_GetMesh1P(GetOwner())->GetAnimInstance();
+	if (IsValid(AnimInstance) && AnimInstance->OnMontageBlendingOut.IsAlreadyBound(this, &ThisClass::BlendOut_CycleWeapon))
+	{
+		AnimInstance->OnMontageBlendingOut.RemoveDynamic(this, &ThisClass::BlendOut_CycleWeapon);
+	}
+
+	CurrentWeapon->WeaponStatus = EWeaponStatus::Idle;
+
+	GEngine->AddOnScreenDebugMessage(
+		-1,
+		5.0f,
+		FColor::Yellow,
+		TEXT("BlendOut_CycleWeapon"),
+		false
+	);
+}
+
 void UCombatComponent::Initiate_FireWeapon_Released()
 {
 	bTriggerPressed = false;
@@ -295,6 +332,19 @@ void UCombatComponent::Equip(AWeapon* WeaponToEquip)
 	OnCurrentReserveAmmoChanged.Broadcast(CurrentReserveAmmo, WeaponToEquip->Ammo, CurrentWeapon->WeaponIcon);
 }
 
+void UCombatComponent::EquipWeapon(AWeapon* Weapon)
+{
+	if (!IsValid(Weapon) || !IsValid(GetOwner())) return;
+	if (GetOwner()->GetLocalRole() == ROLE_Authority)
+	{
+		SetCurrentWeapon(Weapon, CurrentWeapon);
+	}
+	else
+	{
+		Server_EquipWeapon(Weapon);
+	}
+}
+
 void UCombatComponent::SpawnInventory()
 {
 	if (GetOwner()->GetLocalRole() != ROLE_Authority)
@@ -333,14 +383,43 @@ void UCombatComponent::DestroyInventory()
 
 void UCombatComponent::OnRep_CurrentWeapon(AWeapon* PreviousWeapon)
 {
-	if (!IsValid(CurrentWeapon))
-	{
-		return;
-	}
-
-	CurrentWeapon->AttachToOwningPawn(Cast<APawn>(GetOwner()));
+	SetCurrentWeapon(CurrentWeapon, PreviousWeapon);
 	IPlayerInterface::Execute_WeaponReplicated(GetOwner());
 	InitializeWeaponWidgets();
+}
+
+void UCombatComponent::Server_EquipWeapon_Implementation(AWeapon* Weapon)
+{
+	EquipWeapon(Weapon);
+}
+
+void UCombatComponent::SetCurrentWeapon(AWeapon* NewWeapon, AWeapon* LastWeapon)
+{
+	AWeapon* LocalLastWeapon = nullptr;
+
+	if (IsValid(LastWeapon))
+	{
+		LocalLastWeapon = LastWeapon;
+	}
+	else if (NewWeapon != CurrentWeapon)
+	{
+		LocalLastWeapon = CurrentWeapon;
+	}
+
+	if (IsValid(LocalLastWeapon))
+	{
+		LocalLastWeapon->DetachFromOwningPawn();
+		LocalLastWeapon->WeaponStatus = EWeaponStatus::Unequipped;
+	}
+
+	CurrentWeapon = NewWeapon;
+	APawn* OwningPawn = Cast<APawn>(GetOwner());
+	if (IsValid(OwningPawn) && OwningPawn->HasAuthority() && IsValid(CurrentWeapon))
+	{
+		CurrentReserveAmmo = ReserveAmmo.FindChecked(CurrentWeapon->WeaponType);
+	}
+
+	CurrentWeapon->AttachToOwningPawn(OwningPawn);
 }
 
 AWeapon* UCombatComponent::SpawnWeapon(TSubclassOf<AWeapon> WeaponClass) const

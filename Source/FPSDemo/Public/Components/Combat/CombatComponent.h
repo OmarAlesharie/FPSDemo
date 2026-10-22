@@ -47,6 +47,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "FPSDemo|Weapon")
 	float TraceLength;
 
+	UFUNCTION()
+	void BlendOut_CycleWeapon(UAnimMontage* Montage, bool bInterrupted);
+
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -62,6 +65,8 @@ public:
 	void Initiate_ReloadWeapon();
 	void Initiate_AimWeapon_Pressed();
 	void Initiate_AimWeapon_Released();
+
+	void Notify_CycleWeapon();
 
 	UPROPERTY(BlueprintAssignable)
 	FReticleChanged OnReticleChanged;
@@ -85,6 +90,11 @@ public:
 	TObjectPtr<UWeaponData> WeaponData;
 
 	void Equip(AWeapon* WeaponToEquip);
+	void EquipWeapon(AWeapon* Weapon);
+
+	UFUNCTION(Server, Reliable)
+	void Server_EquipWeapon(AWeapon* Weapon);
+
 	void SpawnInventory();
 	void DestroyInventory();
 
@@ -100,6 +110,8 @@ private:
 
 	UFUNCTION()
 	void OnRep_CurrentWeapon(AWeapon* PreviousWeapon);
+
+	void SetCurrentWeapon(AWeapon* NewWeapon, AWeapon* LastWeapon);
 
 	UPROPERTY(Transient, Replicated)
 	TArray<TObjectPtr<AWeapon>> Inventory;
