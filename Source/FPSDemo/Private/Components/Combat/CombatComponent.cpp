@@ -26,6 +26,7 @@ UCombatComponent::UCombatComponent()
 	TraceLength = 30'000.0f;
 	bAiming = false;
 	bTriggerPressed = false;
+	Local_WeaponIndex = 0;
 }
 
 const TObjectPtr<AWeapon> UCombatComponent::GetCurrentWeapon()
@@ -96,8 +97,27 @@ void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 
 void UCombatComponent::Initiate_CycleWeapon()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Cycle Weapon"), false);
+	if (!IsValid(CurrentWeapon)) return;
+	if (CurrentWeapon->WeaponStatus == EWeaponStatus::Cycling) return;
+
+	AdvanceWeaponIndex();
+	// Local_CycleWeapon(WeaponIndex)
+	// Server_CycleWeapon(WeaponIndex)
 }
+
+// Local_CycleWeapon
+	// Play the equip montage of the weapon at WeaponIndex
+		// if locally-controlled, play the 1P, otherwise play the 3P
+	// if locally controlled Server_CycleWeapon()
+	// Set the WeaponStatus on CurrentWeapon to Cycling
+
+// Server_CycleWeapon
+	// Set the local weapon index
+	// Multicast_CycleWeapon(WeaponIndex)
+
+// Multicast_CycleWeapon
+	// Set local weapon index
+	// Local_CycleWeapon(WeaponIndex)
 
 void UCombatComponent::Initiate_FireWeapon_Pressed()
 {
@@ -140,6 +160,15 @@ void UCombatComponent::Local_FireWeapon()
 
 	GetWorld()->GetTimerManager().SetTimer(FireTimer, this, &ThisClass::FireTimerFinished, CurrentWeapon->FireTime);
 	Server_FireWeapon(Hit);
+}
+
+int32 UCombatComponent::AdvanceWeaponIndex()
+{
+	if (Inventory.Num() >= 2)
+	{
+		Local_WeaponIndex = (Local_WeaponIndex + 1) % Inventory.Num();
+	}
+	return Local_WeaponIndex;
 }
 
 void UCombatComponent::FireTimerFinished()

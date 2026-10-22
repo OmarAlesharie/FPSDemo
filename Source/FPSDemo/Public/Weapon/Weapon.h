@@ -19,6 +19,16 @@ enum class EFireType : uint8
 	SemiAuto UMETA(DisplayName = "SemiAutomatic")
 };
 
+UENUM(BlueprintType)
+enum class EWeaponStatus : uint8
+{
+	Idle,		// Weapon doing nothing, can fire/reload/cycle
+	Firing,		// Currently firing, can't reload/cycle
+	Reloading,	// Currently reloading, can't fire/cycle
+	Cycling,	// Currently cycling to the next weapon, can't fire/reload/cycle
+	Unequipped	// On our person, but can't do anything
+};
+
 UCLASS()
 class FPSDEMO_API AWeapon : public AActor
 {
@@ -75,6 +85,8 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "FPSDemo|Ammo")
 	int32 StartingCarriedAmmo;
+
+	EWeaponStatus WeaponStatus;
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OutOfAmmoFireEffect();
