@@ -14,7 +14,7 @@ class UCombatComponent;
 class UInputAction;
 class AWeapon;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWeaponFirstReplicated, AWeapon*, Weapon);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FWeaponFirstReplicated, AWeapon*, Weapon, bool, bTargetingPlayer);
 
 UCLASS()
 class FPSDEMO_API AShooterCharacter : public ACharacter, public IPlayerInterface

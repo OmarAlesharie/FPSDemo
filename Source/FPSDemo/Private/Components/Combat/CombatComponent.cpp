@@ -90,6 +90,7 @@ void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME(UCombatComponent, Inventory);
 	DOREPLIFETIME(UCombatComponent, CurrentWeapon);
 	DOREPLIFETIME_CONDITION(UCombatComponent, bAiming, ELifetimeCondition::COND_SkipOwner);
+	DOREPLIFETIME_CONDITION(UCombatComponent, CurrentReserveAmmo, COND_OwnerOnly);
 
 }
 
@@ -214,6 +215,14 @@ void UCombatComponent::Server_Aim_Implementation(bool bPressed)
 	Local_Aim(bPressed);
 }
 
+void UCombatComponent::OnRep_CurrentReserveAmmo()
+{
+	if (IsValid(CurrentWeapon))
+	{
+		OnCurrentReserveAmmoChanged.Broadcast(CurrentReserveAmmo, CurrentWeapon->Ammo);
+	}
+}
+
 void UCombatComponent::Local_Aim(bool bPressed)
 {
 	bAiming = bPressed;
@@ -226,6 +235,9 @@ void UCombatComponent::Equip(AWeapon* WeaponToEquip)
 {
 	CurrentWeapon = WeaponToEquip;
 	CurrentWeapon->AttachToOwningPawn();
+
+	CurrentReserveAmmo = ReserveAmmo.FindChecked(CurrentWeapon->WeaponType);
+	OnCurrentReserveAmmoChanged.Broadcast(CurrentReserveAmmo, WeaponToEquip->Ammo);
 }
 
 void UCombatComponent::SpawnInventory()
@@ -241,6 +253,7 @@ void UCombatComponent::SpawnInventory()
 		if (NewWeapon)
 		{
 			Inventory.AddUnique(NewWeapon);
+			ReserveAmmo.Add(NewWeapon->WeaponType, NewWeapon->StartingCarriedAmmo);
 		}
 	}
 

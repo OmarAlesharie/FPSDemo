@@ -73,7 +73,7 @@ void AShooterCharacter::WeaponReplicated_Implementation()
 	if (!bWeaponFirstReplicated)
 	{
 		bWeaponFirstReplicated = true;
-		OnWeaponFirstReplicated.Broadcast(Combat->GetCurrentWeapon());
+		OnWeaponFirstReplicated.Broadcast(Combat->GetCurrentWeapon(), Combat->bHitPlayer);
 	}
 }
 
