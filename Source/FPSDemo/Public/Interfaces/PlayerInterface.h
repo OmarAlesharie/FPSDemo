@@ -6,6 +6,8 @@
 #include "UObject/Interface.h"
 #include "PlayerInterface.generated.h"
 
+class AWeapon;
+
 struct FGameplayTag;
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
@@ -47,4 +49,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void Notify_ReloadWeapon();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void AddAmmo(const FGameplayTag& WeaponType, int32 AmmoAmount);
 };

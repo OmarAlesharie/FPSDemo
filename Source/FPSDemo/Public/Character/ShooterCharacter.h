@@ -57,6 +57,7 @@ public:
 	virtual int32 GetReserveAmmo_Implementation() const override;
 	virtual void Notify_CycleWeapon_Implementation() override;
 	virtual void Notify_ReloadWeapon_Implementation() override;
+	virtual void AddAmmo_Implementation(const FGameplayTag& WeaponType, int32 AmmoAmount) override;
 #pragma endregion
 
 	
