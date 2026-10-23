@@ -77,6 +77,9 @@ public:
 
 	bool HasWeaponFirstReplicated() const { return bWeaponFirstReplicated; }
 
+	UPROPERTY(EditDefaultsOnly, Category = "FPSDemo|HitReact")
+	TArray<TObjectPtr<UAnimMontage>> HitReacts;
+
 private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FPSDemo|Combat", meta = (AllowPrivateAccess = "true"))
@@ -128,9 +131,12 @@ private:
 	UPROPERTY(BlueprintReadOnly, Category = "FPSDemo|TurnInPlace", meta = (AllowPrivateAccess = "true"))
 	float AO_Yaw;
 
-	UPROPERTY(BlueprintReadOnly, Category = "FPS|Strafing", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(BlueprintReadOnly, Category = "FPSDemo|Strafing", meta = (AllowPrivateAccess = "true"))
 	float MovementOffsetYaw;
 
 	UPROPERTY(BlueprintReadOnly, Category = "FPSDemo|TurnInPlace", meta = (AllowPrivateAccess = "true"))
 	ETurningInPlace TurningStatus;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_HitReact(int32 MontageIndex);
 };

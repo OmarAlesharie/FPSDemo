@@ -8,6 +8,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/Combat/CombatComponent.h"
 #include "EnhancedInputComponent.h"
+#include "Animation/AnimInstance.h"
 #include "Components/InputComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Weapon/Weapon.h"
@@ -108,9 +109,24 @@ void AShooterCharacter::AddAmmo_Implementation(const FGameplayTag& WeaponType, i
 bool AShooterCharacter::DoDamage_Implementation(float DamageAmount, AActor* DamageInstigator)
 {
 	// Change Health by DamageAmount
-	// Play a Hit React montage (also multicast hit react)
+	
 	// calculate whether or not damage was leathal
+
+	const int32 MontageSelection = FMath::RandRange(0, HitReacts.Num() - 1);
+	Multicast_HitReact(MontageSelection);
+
 	return false;
+}
+
+void AShooterCharacter::Multicast_HitReact_Implementation(int32 MontageIndex)
+{
+	if (GetNetMode() != NM_DedicatedServer && !IsLocallyControlled())
+	{
+		if (HitReacts.IsValidIndex(MontageIndex))
+		{
+			GetMesh()->GetAnimInstance()->Montage_Play(HitReacts[MontageIndex]);
+		}
+	}
 }
 
 void AShooterCharacter::BeginDestroy()
