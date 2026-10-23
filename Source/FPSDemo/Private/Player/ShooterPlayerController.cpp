@@ -11,8 +11,7 @@
 AShooterPlayerController::AShooterPlayerController()
 {
 	bReplicates = true;
-
-
+	bPawnAlive = true;
 }
 
 void AShooterPlayerController::BeginPlay()
@@ -44,6 +43,8 @@ void AShooterPlayerController::SetupInputComponent()
 
 void AShooterPlayerController::Move(const FInputActionValue& Value)
 {
+	if (!bPawnAlive) return;
+
 	const FVector2D LookAxisVector = Value.Get<FVector2D>();
 	const FRotator TheControlRotation = GetControlRotation();
 	const FRotator YawRotation(0.f, TheControlRotation.Yaw, 0.f);
@@ -64,6 +65,8 @@ void AShooterPlayerController::Move(const FInputActionValue& Value)
 
 void AShooterPlayerController::Look(const FInputActionValue& Value)
 {
+	if (!bPawnAlive) return;
+
 	const FVector2D LookAxisVector = Value.Get<FVector2D>();
 
 	AddYawInput(LookAxisVector.X);
@@ -77,6 +80,8 @@ void AShooterPlayerController::Crouch()
 		UE_LOG(LogTemp, Warning, TEXT("Character is not valid."));
 		return;
 	}
+
+	if (!bPawnAlive) return;
 
 	if (UCharacterMovementComponent* CMC = GetCharacter()->GetCharacterMovement(); IsValid(CMC))
 	{
@@ -95,6 +100,8 @@ void AShooterPlayerController::Jump()
 		UE_LOG(LogTemp, Warning, TEXT("Character is not valid."));
 		return;
 	}
+	if (!bPawnAlive) return;
+
 	UCharacterMovementComponent* CMC = GetCharacter()->GetCharacterMovement();
 	if (!IsValid(CMC)) 
 	{

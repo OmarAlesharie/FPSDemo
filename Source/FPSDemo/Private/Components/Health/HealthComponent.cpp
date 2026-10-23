@@ -34,7 +34,10 @@ bool UHealthComponent::ChangeHealthByAmount(float Amount, AActor* Instigator)
 	float OldValue = Health;
 	Health = FMath::Clamp(Health + Amount, 0.f, MaxHealth);
 	OnHealthChanged.Broadcast(this, OldValue, Health, Instigator);
-	// Check if lethal -> Start Death
+	if (Health <= 0.f)
+	{
+		StartDeath();
+	}
 	return false;
 }
 
@@ -45,6 +48,17 @@ void UHealthComponent::ChangeMaxHealthByAmount(float Amount, AActor* Instigator)
 	OnMaxHealthChanged.Broadcast(this, OldValue, MaxHealth, Instigator);
 }
 
+void UHealthComponent::StartDeath()
+{
+	if (DeathState != EDeathState::NotDead)
+	{
+		return;
+	}
+
+	DeathState = EDeathState::DeathStarted;
+	OnDeathStarted.Broadcast();
+	GetOwner()->ForceNetUpdate();
+}
 
 // Called when the game starts
 void UHealthComponent::BeginPlay()

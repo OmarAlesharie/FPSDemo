@@ -82,6 +82,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "FPSDemo|HitReact")
 	TArray<TObjectPtr<UAnimMontage>> HitReacts;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void DeathEffects();
+
 private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FPSDemo|Combat", meta = (AllowPrivateAccess = "true"))
@@ -144,4 +147,7 @@ private:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_HitReact(int32 MontageIndex);
+
+	UFUNCTION()
+	void OnDeathStarted();
 };

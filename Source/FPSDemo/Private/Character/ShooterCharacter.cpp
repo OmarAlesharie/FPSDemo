@@ -13,6 +13,9 @@
 #include "Components/Health/HealthComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Weapon/Weapon.h"
+#include "Player/ShooterPlayerController.h"
+#include "FPSDemo/FPSDemo.h"
+#include "Components/CapsuleComponent.h"
 
 
 // Sets default values
@@ -67,10 +70,17 @@ AShooterCharacter::AShooterCharacter()
 void AShooterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	Health->OnDeathStarted.AddDynamic(this, &ThisClass::OnDeathStarted);
+
 	FirstPersonCameraComponent->SetFieldOfView(DefaultFOV);
 
 	StartingAimRotation = FRotator(0.f, GetBaseAimRotation().Yaw, 0.f);
+
+	if (AShooterPlayerController* PC = Cast<AShooterPlayerController>(GetController()); IsValid(PC))
+	{
+		PC->bPawnAlive = true;
+	}
 }
 
 void AShooterCharacter::WeaponReplicated_Implementation()
@@ -133,6 +143,25 @@ void AShooterCharacter::Multicast_HitReact_Implementation(int32 MontageIndex)
 			GetMesh()->GetAnimInstance()->Montage_Play(HitReacts[MontageIndex]);
 		}
 	}
+}
+
+void AShooterCharacter::OnDeathStarted()
+{
+	if (GetNetMode() != NM_DedicatedServer)
+	{
+		DeathEffects();
+		if (AShooterPlayerController* PC = Cast<AShooterPlayerController>(GetController()); IsValid(PC))
+		{
+			DisableInput(PC);
+			if (PC->IsLocalController())
+			{
+				PC->bPawnAlive = false;
+			}
+		}
+	}
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(FPSDemoTraceChannels::ECC_Weapon, ECR_Ignore);
+	GetMesh()->SetCollisionResponseToChannel(FPSDemoTraceChannels::ECC_Weapon, ECR_Ignore);
 }
 
 void AShooterCharacter::BeginDestroy()
