@@ -112,7 +112,9 @@ void AShooterCharacter::AddAmmo_Implementation(const FGameplayTag& WeaponType, i
 
 bool AShooterCharacter::DoDamage_Implementation(float DamageAmount, AActor* DamageInstigator)
 {
-	// Change Health by DamageAmount
+	if (!IsValid(Health)) return false;
+
+	Health->ChangeHealthByAmount(-DamageAmount, DamageInstigator);
 	
 	// calculate whether or not damage was leathal
 

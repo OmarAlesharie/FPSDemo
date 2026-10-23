@@ -30,6 +30,7 @@ public:
 
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	
+	UFUNCTION(BlueprintPure, Category = "FPSDemo|Health")
 	static UHealthComponent* FindHealthComponent(const AActor* Actor) { return IsValid(Actor) ? Actor->FindComponentByClass<UHealthComponent>() : nullptr; }
 
 	UFUNCTION(BlueprintCallable)
@@ -42,10 +43,10 @@ public:
 	UPROPERTY(ReplicatedUsing = OnRep_DeathState)
 	EDeathState DeathState;
 
-	UPROPERTY(ReplicatedUsing = OnRep_Health)
+	UPROPERTY(ReplicatedUsing = OnRep_Health, EditDefaultsOnly, Category = "FPSDemo|Health")
 	float Health;
 
-	UPROPERTY(ReplicatedUsing = OnRep_MaxHealth)
+	UPROPERTY(ReplicatedUsing = OnRep_MaxHealth, EditDefaultsOnly, Category = "FPSDemo|Health")
 	float MaxHealth;
 
 	UPROPERTY(BlueprintAssignable)
