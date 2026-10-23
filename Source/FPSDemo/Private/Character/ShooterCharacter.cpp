@@ -10,6 +10,7 @@
 #include "EnhancedInputComponent.h"
 #include "Animation/AnimInstance.h"
 #include "Components/InputComponent.h"
+#include "Components/Health/HealthComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Weapon/Weapon.h"
 
@@ -52,6 +53,9 @@ AShooterCharacter::AShooterCharacter()
 
 	Combat = CreateDefaultSubobject<UCombatComponent>("Combat");
 	Combat->SetIsReplicated(true);
+
+	Health = CreateDefaultSubobject<UHealthComponent>("Health");
+	Health->SetIsReplicated(true);
 
 	DefaultFOV = 90.0f;
 

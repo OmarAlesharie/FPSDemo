@@ -13,6 +13,8 @@ class USpringArmComponent;
 class UCombatComponent;
 class UInputAction;
 class AWeapon;
+class UHealthComponent;
+
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FWeaponFirstReplicated, AWeapon*, Weapon, bool, bTargetingPlayer);
 
@@ -84,6 +86,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FPSDemo|Combat", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UCombatComponent> Combat;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FPSDemo|Health", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UHealthComponent> Health;
 
 	// Mesh for 1st person view (arms; seen only by self)
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh", meta = (AllowPrivateAccess = "true"))
