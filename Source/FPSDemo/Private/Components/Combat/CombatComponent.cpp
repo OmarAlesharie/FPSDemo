@@ -200,7 +200,15 @@ int32 UCombatComponent::AdvanceWeaponIndex()
 
 void UCombatComponent::FireTimerFinished()
 {
-	if (!IsValid(CurrentWeapon)) return;
+	APawn* OwningPawn = Cast<APawn>(GetOwner());
+	if (!IsValid(CurrentWeapon) || !IsValid(OwningPawn)) return;
+
+	if (CurrentWeapon->Ammo == 0 && CurrentReserveAmmo > 0 && OwningPawn->IsLocallyControlled())
+	{
+		Local_ReloadWeapon();
+		Server_ReloadWeapon();
+		return;
+	}
 
 	if (CurrentWeapon->WeaponStatus == EWeaponStatus::Firing)
 	{
@@ -453,12 +461,21 @@ void UCombatComponent::SetCurrentWeapon(AWeapon* NewWeapon, AWeapon* LastWeapon)
 
 	CurrentWeapon = NewWeapon;
 	APawn* OwningPawn = Cast<APawn>(GetOwner());
-	if (IsValid(OwningPawn) && OwningPawn->HasAuthority() && IsValid(CurrentWeapon))
+	if (!IsValid(OwningPawn)) return;
+
+	if (OwningPawn->HasAuthority() && IsValid(CurrentWeapon))
 	{
 		CurrentReserveAmmo = ReserveAmmo.FindChecked(CurrentWeapon->WeaponType);
 	}
 
+	if (!IsValid(CurrentWeapon)) return;
 	CurrentWeapon->AttachToOwningPawn(OwningPawn);
+
+	if (CurrentWeapon->Ammo == 0 && CurrentReserveAmmo > 0 && OwningPawn->IsLocallyControlled())
+	{
+		Local_ReloadWeapon();
+		Server_ReloadWeapon();
+	}
 }
 
 void UCombatComponent::SpawnInventory()
