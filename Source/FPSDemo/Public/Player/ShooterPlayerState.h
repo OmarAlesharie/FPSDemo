@@ -35,6 +35,9 @@ public:
 	APlayerState* GetLastAttacker() const;
 	int32 GetScoredElims() const;
 
+	UFUNCTION(Client, Reliable)
+	void Client_LostTheLead();
+
 private:
 	int32 ScoredElims;
 	int32 Defeats;
