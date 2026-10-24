@@ -41,6 +41,12 @@ void AShooterPlayerController::SetupInputComponent()
 	ShooterInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AShooterPlayerController::Jump);
 }
 
+void AShooterPlayerController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+	bPawnAlive = true;
+}
+
 void AShooterPlayerController::Move(const FInputActionValue& Value)
 {
 	if (!bPawnAlive) return;

@@ -333,6 +333,11 @@ void AShooterCharacter::PossessedBy(AController* NewController)
 	{
 		Combat->SpawnInventory();
 	}
+
+	if (AShooterPlayerController* PC = Cast<AShooterPlayerController>(GetController()); IsValid(PC))
+	{
+		PC->bPawnAlive = true;
+	}
 }
 
 void AShooterCharacter::OnRep_PlayerState()
@@ -342,6 +347,11 @@ void AShooterCharacter::OnRep_PlayerState()
 	if (IsValid(Combat))
 	{
 		Combat->InitializeWeaponWidgets();
+	}
+
+	if (AShooterPlayerController* PC = Cast<AShooterPlayerController>(GetController()); IsValid(PC))
+	{
+		PC->bPawnAlive = true;
 	}
 }
 
