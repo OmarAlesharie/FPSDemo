@@ -37,7 +37,19 @@ void UEliminationComponent::OnRoundReported(AActor* Attacker, AActor* Victim, bo
 
 void UEliminationComponent::ProcessElimination(bool bHeadShot, AShooterPlayerState* AttackerPS, AShooterPlayerState* VictimPS)
 {
+	AttackerPS->AddScoredElim();
+	VictimPS->AddDefeat();
 
+	// Process Head Shot
+	// Process Sequential Eliminations
+	// Process Streaks
+	// Handle First Blood
+	// Update Leader Status
+
+	// if (Has Special Elim Types)
+		// Tell the client which special elims we got
+	// else (We just got a regular elim)
+		// Just tell the client we got a regular elim
 }
 
 void UEliminationComponent::ProcessHitOrMiss(bool bHit, AShooterPlayerState* AttackerPS)
