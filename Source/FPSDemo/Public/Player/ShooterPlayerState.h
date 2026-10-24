@@ -67,4 +67,6 @@ private:
 	bool bWinner;
 
 	TWeakObjectPtr<APlayerState> LastAttacker;
+
+	TArray<ESpecialElimType> DecodeElimBitmask(ESpecialElimType ElimTypeBitmask);
 };

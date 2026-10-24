@@ -130,6 +130,24 @@ int32 AShooterPlayerState::GetScoredElims() const
 	return ScoredElims;
 }
 
+TArray<ESpecialElimType> AShooterPlayerState::DecodeElimBitmask(ESpecialElimType ElimTypeBitmask)
+{
+	TArray<ESpecialElimType> ValidElims;
+
+	uint16 BitmaskValue = static_cast<uint16>(ElimTypeBitmask);
+
+	for (uint16 i = 0; i < 16; i++)
+	{
+		if (BitmaskValue & (1 << i))
+		{
+			ESpecialElimType EnumValue = static_cast<ESpecialElimType>(1 << i);
+			ValidElims.Add(EnumValue);
+		}
+	}
+
+	return ValidElims;
+}
+
 void AShooterPlayerState::Client_SpecialElim_Implementation(const ESpecialElimType& SpecialElim, int32 SequentialElimCount, int32 StreakCount, int32 ElimScore)
 {
 }
