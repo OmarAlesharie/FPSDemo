@@ -86,6 +86,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "FPSDemo|HitReact")
 	TArray<TObjectPtr<UAnimMontage>> HitReacts;
 
+	UPROPERTY(EditDefaultsOnly, Category = "FPS|Respawn")
+	float RespawnTime;
+
 	UFUNCTION(BlueprintImplementableEvent)
 	void DeathEffects();
 
@@ -135,6 +138,10 @@ private:
 
 	FRotator StartingAimRotation;
 	float InterpAO_Yaw;
+
+	FTimerHandle DeathTimer;
+
+	void DeathTimerFinished();
 
 	UPROPERTY(BlueprintReadOnly, Category = "FPSDemo|TurnInPlace", meta = (AllowPrivateAccess = "true"))
 	float AO_Yaw;

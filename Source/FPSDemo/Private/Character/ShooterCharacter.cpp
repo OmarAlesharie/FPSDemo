@@ -16,6 +16,9 @@
 #include "Player/ShooterPlayerController.h"
 #include "FPSDemo/FPSDemo.h"
 #include "Components/CapsuleComponent.h"
+#include "Game/ShooterGameModeBase.h"
+#include "Kismet/GameplayStatics.h"
+#include "TimerManager.h"
 
 
 // Sets default values
@@ -64,6 +67,7 @@ AShooterCharacter::AShooterCharacter()
 
 	TurningStatus = ETurningInPlace::NotTurning;
 	bWeaponFirstReplicated = false;
+	RespawnTime = 3.f;
 }
 
 // Called when the game starts or when spawned
@@ -150,6 +154,7 @@ void AShooterCharacter::OnDeathStarted()
 	if (HasAuthority())
 	{
 		Combat->DestroyInventory();
+		GetWorld()->GetTimerManager().SetTimer(DeathTimer, this, &AShooterCharacter::DeathTimerFinished, RespawnTime);
 	}
 
 	if (GetNetMode() != NM_DedicatedServer)
@@ -167,6 +172,15 @@ void AShooterCharacter::OnDeathStarted()
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(FPSDemoTraceChannels::ECC_Weapon, ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(FPSDemoTraceChannels::ECC_Weapon, ECR_Ignore);
+}
+
+void AShooterCharacter::DeathTimerFinished()
+{
+	AShooterGameModeBase* GM = Cast<AShooterGameModeBase>(UGameplayStatics::GetGameMode(this));
+	if (IsValid(GM))
+	{
+		GM->RequestRespawn(this, GetController());
+	}
 }
 
 void AShooterCharacter::BeginDestroy()
