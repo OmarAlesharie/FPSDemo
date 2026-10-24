@@ -14,6 +14,12 @@ AShooterPlayerController::AShooterPlayerController()
 	bPawnAlive = true;
 }
 
+void AShooterPlayerController::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+	OnPlayerStateReplicated.Broadcast();
+}
+
 void AShooterPlayerController::BeginPlay()
 {
 	Super::BeginPlay();

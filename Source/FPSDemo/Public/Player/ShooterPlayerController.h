@@ -10,9 +10,10 @@ class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
 
-/**
- * 
- */
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerStateReplicated);
+
+
 UCLASS()
 class FPSDEMO_API AShooterPlayerController : public APlayerController
 {
@@ -20,6 +21,11 @@ class FPSDEMO_API AShooterPlayerController : public APlayerController
 
 public:
 	AShooterPlayerController();
+
+	UPROPERTY(BlueprintAssignable)
+	FPlayerStateReplicated OnPlayerStateReplicated;
+
+	virtual void OnRep_PlayerState() override;
 
 	bool bPawnAlive;
 
