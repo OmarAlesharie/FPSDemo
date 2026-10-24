@@ -4,17 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "EliminationActorComponent.generated.h"
+#include "EliminationComponent.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class FPSDEMO_API UEliminationActorComponent : public UActorComponent
+class FPSDEMO_API UEliminationComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:	
 	// Sets default values for this component's properties
-	UEliminationActorComponent();
+	UEliminationComponent();
 
 
 	UFUNCTION()

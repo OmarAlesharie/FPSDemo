@@ -19,7 +19,7 @@
 #include "Game/ShooterGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
-#include "Components/Elimination/EliminationActorComponent.h"
+#include "Components/Elimination/EliminationComponent.h"
 
 
 // Sets default values
@@ -61,7 +61,7 @@ AShooterCharacter::AShooterCharacter()
 	Combat = CreateDefaultSubobject<UCombatComponent>("Combat");
 	Combat->SetIsReplicated(true);
 
-	Elimination = CreateDefaultSubobject<UEliminationActorComponent>("Elimination");
+	Elimination = CreateDefaultSubobject<UEliminationComponent>("Elimination");
 	Elimination->SetIsReplicated(false);
 
 	Health = CreateDefaultSubobject<UHealthComponent>("Health");
@@ -92,7 +92,7 @@ void AShooterCharacter::BeginPlay()
 
 	if (HasAuthority())
 	{
-		Combat->OnRoundReported.AddDynamic(Elimination, &UEliminationActorComponent::OnRoundReported);
+		Combat->OnRoundReported.AddDynamic(Elimination, &UEliminationComponent::OnRoundReported);
 	}
 }
 
