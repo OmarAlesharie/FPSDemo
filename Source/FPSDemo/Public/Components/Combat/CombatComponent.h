@@ -19,6 +19,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FRoundFired, int32, RoundsCurrent
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAimingStatusChanged, bool, bIsAiming);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTargetingPlayerStatusChanged, bool, bIsAiming);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FCurrentReserveAmmoChanged, int32, RoundsInReserve, int32, RoundsInWeapon, UMaterialInterface*, WeaponIconMaterial);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FiveParams(FRoundReported, AActor*, Attacker, AActor*, Victim, bool, bHit, bool, bHeadShot, bool, bLethal);
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -88,6 +89,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FCurrentReserveAmmoChanged OnCurrentReserveAmmoChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FRoundReported OnRoundReported;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FPSDemo|Weapon")
 	TObjectPtr<UWeaponData> WeaponData;

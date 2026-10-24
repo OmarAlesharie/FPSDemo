@@ -14,6 +14,7 @@ class UCombatComponent;
 class UInputAction;
 class AWeapon;
 class UHealthComponent;
+class UEliminationActorComponent;
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FWeaponFirstReplicated, AWeapon*, Weapon, bool, bTargetingPlayer);
@@ -96,6 +97,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FPSDemo|Combat", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UCombatComponent> Combat;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FPSDemo|Elimination", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UEliminationActorComponent> Elimination;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FPSDemo|Health", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UHealthComponent> Health;
