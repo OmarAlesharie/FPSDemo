@@ -2,6 +2,8 @@
 
 
 #include "Player/ShooterPlayerState.h"
+#include "Data/SpecialElimData.h"
+#include "UI/Elims/SpecialElim.h"
 
 AShooterPlayerState::AShooterPlayerState()
 {
@@ -138,5 +140,16 @@ void AShooterPlayerState::Client_ScoredElim_Implementation(int32 ElimScore)
 
 void AShooterPlayerState::Client_LostTheLead_Implementation()
 {
-	// TODO: Show the client that they've lost the lead.
+	ensure(IsValid(SpecialElimData));
+	FSpecialElimInfo& ElimMessageInfo = SpecialElimData->SpecialElimInfo.FindChecked(ESpecialElimType::LostTheLead);
+
+	if (IsValid(SpecialElimWidgetClass))
+	{
+		USpecialElim* ElimWidget = CreateWidget<USpecialElim>(GetPlayerController(), SpecialElimWidgetClass);
+		if (IsValid(ElimWidget))
+		{
+			ElimWidget->InitializeWidget(ElimMessageInfo.ElimMessage, ElimMessageInfo.ElimIcon);
+			ElimWidget->AddToViewport();
+		}
+	}
 }
