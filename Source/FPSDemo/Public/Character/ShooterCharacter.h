@@ -36,6 +36,10 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnAim(bool bIsAiming);
 
+	// Mesh for 1st person view (arms; seen only by self)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FPSDemo|Mesh", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr < USkeletalMeshComponent> Mesh1P;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -92,10 +96,6 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FPSDemo|Health", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UHealthComponent> Health;
-
-	// Mesh for 1st person view (arms; seen only by self)
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr < USkeletalMeshComponent> Mesh1P;
 
 	// Camera boom positioning the camera behind the character
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FPSDemo|Camera", meta = (AllowPrivateAccess = "true"))
