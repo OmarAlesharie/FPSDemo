@@ -4,6 +4,7 @@
 #include "Components/Elimination/EliminationComponent.h"
 #include "Player/ShooterPlayerState.h"
 #include "GameFramework/Pawn.h"
+#include "ShooterTypes/ShooterTypes.h"
 
 // Sets default values for this component's properties
 UEliminationComponent::UEliminationComponent()
