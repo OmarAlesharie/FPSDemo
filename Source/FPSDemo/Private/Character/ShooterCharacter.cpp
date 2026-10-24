@@ -71,7 +71,7 @@ void AShooterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Health->OnDeathStarted.AddDynamic(this, &ThisClass::OnDeathStarted);
+	Health->OnDeathStarted.AddDynamic(this, &AShooterCharacter::OnDeathStarted);
 
 	FirstPersonCameraComponent->SetFieldOfView(DefaultFOV);
 

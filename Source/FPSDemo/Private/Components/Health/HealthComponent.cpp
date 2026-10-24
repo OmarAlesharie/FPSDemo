@@ -71,7 +71,10 @@ void UHealthComponent::BeginPlay()
 
 void UHealthComponent::OnRep_DeathState(EDeathState OldDeathState)
 {
-
+	if (DeathState == EDeathState::DeathStarted)
+	{
+		OnDeathStarted.Broadcast();
+	}
 }
 
 void UHealthComponent::OnRep_Health(float OldValue)
