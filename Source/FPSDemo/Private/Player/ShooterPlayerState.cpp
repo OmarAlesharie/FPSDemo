@@ -5,6 +5,7 @@
 #include "TimerManager.h"
 #include "Data/SpecialElimData.h"
 #include "UI/Elims/SpecialElim.h"
+#include "Net/UnrealNetwork.h"
 
 AShooterPlayerState::AShooterPlayerState()
 {
@@ -28,11 +29,21 @@ AShooterPlayerState::AShooterPlayerState()
 
 void AShooterPlayerState::AddScoredElim()
 {
+	if (!HasAuthority())
+	{
+		return;
+	}
+
 	++ScoredElims;
 }
 
 void AShooterPlayerState::AddDefeat()
 {
+	if (!HasAuthority())
+	{
+		return;
+	}
+
 	++Defeats;
 }
 
@@ -48,6 +59,11 @@ void AShooterPlayerState::AddMiss()
 
 void AShooterPlayerState::AddHeadShotElim()
 {
+	if (!HasAuthority())
+	{
+		return;
+	}
+
 	++HeadShotElims;
 }
 
@@ -77,6 +93,11 @@ void AShooterPlayerState::AddSequentialElim(int32 SequenceCount)
 
 void AShooterPlayerState::UpdateHighestStreak(int32 StreakCount)
 {
+	if (!HasAuthority())
+	{
+		return;
+	}
+
 	if (StreakCount > HighestStreak)
 	{
 		HighestStreak = StreakCount;
@@ -85,11 +106,21 @@ void AShooterPlayerState::UpdateHighestStreak(int32 StreakCount)
 
 void AShooterPlayerState::AddRevengeElim()
 {
+	if (!HasAuthority())
+	{
+		return;
+	}
+
 	++RevengeElims;
 }
 
 void AShooterPlayerState::AddDethroneElim()
 {
+	if (!HasAuthority())
+	{
+		return;
+	}
+
 	++DethroneElims;
 }
 
@@ -131,6 +162,18 @@ APlayerState* AShooterPlayerState::GetLastAttacker() const
 int32 AShooterPlayerState::GetScoredElims() const
 {
 	return ScoredElims;
+}
+
+void AShooterPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AShooterPlayerState, ScoredElims);
+	DOREPLIFETIME(AShooterPlayerState, Defeats);
+	DOREPLIFETIME(AShooterPlayerState, HeadShotElims);
+	DOREPLIFETIME(AShooterPlayerState, HighestStreak);
+	DOREPLIFETIME(AShooterPlayerState, RevengeElims);
+	DOREPLIFETIME(AShooterPlayerState, DethroneElims);
 }
 
 TArray<ESpecialElimType> AShooterPlayerState::DecodeElimBitmask(ESpecialElimType ElimTypeBitmask)
@@ -192,6 +235,11 @@ void AShooterPlayerState::ShowSpecialElim(const FSpecialElimInfo& ElimMessageInf
 			ElimWidget->AddToViewport();
 		}
 	}
+}
+
+void AShooterPlayerState::OnRep_PlayerStatsChanged()
+{
+	OnPlayerStatsChanged.Broadcast();
 }
 
 void AShooterPlayerState::Client_SpecialElim_Implementation(const ESpecialElimType& SpecialElim, int32 SequentialElimCount, int32 StreakCount, int32 ElimScore)

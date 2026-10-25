@@ -20,6 +20,9 @@ public:
 	void UpdateLeader();
 	AShooterPlayerState* GetSoleLeader() const;
 	bool IsTiedForTheLead(AShooterPlayerState* PlayerState);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "FPSDemo|Scoreboard")
+	TArray<AShooterPlayerState*> GetSortedPlayerStates() const;
 private:
 
 	bool bHasFirstBloodBeenHad;

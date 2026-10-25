@@ -73,3 +73,26 @@ bool AShooterGameStateBase::IsTiedForTheLead(AShooterPlayerState* PlayerState)
 {
 	return Leaders.Contains(PlayerState) && Leaders.Num() > 1;
 }
+
+TArray<AShooterPlayerState*> AShooterGameStateBase::GetSortedPlayerStates() const
+{
+	TArray<AShooterPlayerState*> SortedPlayers;
+
+	for (APlayerState* PlayerState : PlayerArray)
+	{
+		if (AShooterPlayerState* ShooterPS =
+			Cast<AShooterPlayerState>(PlayerState))
+		{
+			SortedPlayers.Add(ShooterPS);
+		}
+	}
+
+	SortedPlayers.Sort(
+		[](const AShooterPlayerState& A, const AShooterPlayerState& B)
+		{
+			return A.GetScoredElims() > B.GetScoredElims();
+		}
+	);
+
+	return SortedPlayers;
+}

@@ -12,6 +12,7 @@ class USpecialElimData;
 enum class ESpecialElimType : uint16;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FScoreChanged, int32, NewScore);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerStatsChanged);
 
 UCLASS()
 class FPSDEMO_API AShooterPlayerState : public APlayerState
@@ -22,6 +23,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FScoreChanged OnScoreChanged;
+
+	UPROPERTY(BlueprintAssignable, Category = "FPSDemo|Scoreboard")
+	FPlayerStatsChanged OnPlayerStatsChanged;
 
 	void AddScoredElim();
 	void AddDefeat();
@@ -40,6 +44,8 @@ public:
 
 	bool IsOnStreak() const;
 	APlayerState* GetLastAttacker() const;
+
+	UFUNCTION(BlueprintPure, Category = "FPSDemo|Scoreboard")
 	int32 GetScoredElims() const;
 
 	UFUNCTION(Client, Reliable)
@@ -60,16 +66,59 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "FPS|SpecialElims")
 	float ElimDisplayTime;
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	UFUNCTION(BlueprintPure, Category = "FPSDemo|Scoreboard")
+	int32 GetDefeats() const
+	{
+		return Defeats;
+	}
+
+	UFUNCTION(BlueprintPure, Category = "FPSDemo|Scoreboard")
+	int32 GetHeadShotElims() const
+	{
+		return HeadShotElims;
+	}
+
+	UFUNCTION(BlueprintPure, Category = "FPSDemo|Scoreboard")
+	int32 GetHighestStreak() const
+	{
+		return HighestStreak;
+	}
+
+	UFUNCTION(BlueprintPure, Category = "FPSDemo|Scoreboard")
+	int32 GetRevengeElims() const
+	{
+		return RevengeElims;
+	}
+
+	UFUNCTION(BlueprintPure, Category = "FPSDemo|Scoreboard")
+	int32 GetDethroneElims() const
+	{
+		return DethroneElims;
+	}
+
 private:
+	UPROPERTY(ReplicatedUsing = OnRep_PlayerStatsChanged)
 	int32 ScoredElims;
+
+	UPROPERTY(ReplicatedUsing = OnRep_PlayerStatsChanged)
 	int32 Defeats;
 	int32 Hits;
 	int32 Misses;
 	bool bOnStreak; // How many elims do we have since we've spawned?
+
+	UPROPERTY(ReplicatedUsing = OnRep_PlayerStatsChanged)
 	int32 HeadShotElims;
 	TMap<int32, int32> SequentialElims; // Sequential elims - multiple elims within a short period of time
+
+	UPROPERTY(ReplicatedUsing = OnRep_PlayerStatsChanged)
 	int32 HighestStreak;
+
+	UPROPERTY(ReplicatedUsing = OnRep_PlayerStatsChanged)
 	int32 RevengeElims;
+
+	UPROPERTY(ReplicatedUsing = OnRep_PlayerStatsChanged)
 	int32 DethroneElims;
 	int32 ShowStopperElims;
 	bool bFirstBlood;
@@ -83,4 +132,7 @@ private:
 	void ShowSpecialElim(const FSpecialElimInfo& ElimMessageInfo);
 	TQueue<FSpecialElimInfo> SpecialElimQueue;
 	bool bIsProcessingQueue;
+
+	UFUNCTION()
+	void OnRep_PlayerStatsChanged();
 };
