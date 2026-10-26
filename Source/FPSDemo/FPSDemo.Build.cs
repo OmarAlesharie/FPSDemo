@@ -17,8 +17,10 @@ public class FPSDemo : ModuleRules
 			"PhysicsCore", 
 			"UMG",
 			"Slate",
-            "SlateCore"
-		});
+            "SlateCore",
+            "OnlineSubsystem",
+            "OnlineSubsystemUtils"
+        });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
